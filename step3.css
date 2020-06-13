@@ -1,0 +1,105 @@
+/**
+ * Copyright (C) FrustratedProgrammer - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Elijah Anderson <contact@frustratedprogrammer>, April 2020
+ **/
+
+.step3_img_choice_container {
+    width: 30%;
+}
+
+.step3_img_container {
+    width: 100%;
+}
+
+.border {
+}
+
+@keyframes border-dance {
+    0% {
+        background-position: 0 0, 100% 100%, 100% 0, 0 100%;
+    }
+    100% {
+        background-position: 100% 0, 0 100%, 100% 100%, 0 0;
+    }
+}
+
+.step3_img_container img {
+    max-width: 100%;
+    max-height: 420px;
+    margin: auto;
+    display: none;
+    background: linear-gradient(90deg, #000000 50%, transparent 50%), linear-gradient(90deg, #000000 50%, transparent 50%), linear-gradient(0deg, #000000 50%, transparent 50%), linear-gradient(0deg, #000000 50%, transparent 50%);
+    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+    background-size: 15px 4px, 15px 4px, 4px 15px, 4px 15px;
+    background-position: 0 0, 100% 0, 0 100%, 100% 0;
+    padding: 4px;
+    animation: border-dance 8s infinite linear;
+}
+
+#step3_frontside, #step3_backside {
+    width: 23%;
+    top: 47%;
+    display: grid;
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+#front_card_select, #back_card_select {
+    font-size: 150%;
+    width: 100%;
+    font-family: ringbearer, cursive;
+    background-color: #bdbdbd;
+}
+
+#step3_frontside {
+    left: 30%;
+}
+
+#step3_backside {
+    left: 70%;
+}
+
+.step3_upload {
+    font-family: widelatin, monospace;
+    font-size: 90%;
+}
+
+#step3_title {
+    margin: 0;
+    font-family: ringbearer;
+    text-align: center;
+    font-size: 150%;
+}
+
+#step3_approve {
+    position: absolute;
+    color: black;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 75%;
+    font-family: ringbearer;
+    padding: 5px;
+    font-size: 200%;
+    background-color: #a0a0a0;
+}
+
+@keyframes fadeOpacity {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.fadeIn {
+    animation: fadeOpacity 2s;
+    opacity: 1;
+}
+
+.fadeOut {
+    animation: fadeOpacity 0.5s reverse;
+    opacity: 0;
+}

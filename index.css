@@ -1,0 +1,243 @@
+/**
+ * Copyright (C) FrustratedProgrammer - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Elijah Anderson <contact@frustratedprogrammer>, April 2020
+ **/
+
+@keyframes yAxisForward{
+    0%{
+        top:200%;
+        transform: scale(0);
+    }
+    70%{
+        animation-timing-function: ease-in-out;
+        transform: scale(0.2);
+    }
+    100%{
+        top:0;
+        transform: scale(1);
+    }
+}
+
+@keyframes xAxisForward {
+    0%{
+        left:-150%
+    }
+    60%{
+        left:60%;
+        animation-timing-function: ease-in-out;
+    }
+    100%{
+        left:50%;
+    }
+}
+
+@keyframes popout {
+    0%{
+        transform: translate(-50%,50%) scale(1);
+    }
+    33.3333333% {
+        transform: translate(-50%,50%) scale(1.4);
+    }
+    100%{
+        transform: translate(-50%,50%) scale(0);
+    }
+}
+
+@keyframes fadeinBack {
+    0%{
+        background-color: rgba(0,0,0,0);
+    }
+    100%{
+        background-color: rgba(0,0,0,0.6);
+    }
+}
+
+.popup{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    display: none;
+}
+.popup_container{
+    background-color: transparent;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    width: 50%;
+    height: 50%;
+}
+.popup_body{
+    background-color: #00A000;
+    padding: 5px;
+}
+.popup_fade{
+    animation: fadeinBack 1s ease;
+    background-color: rgba(0,0,0,0.6);
+}
+.popup_fade_r{
+    background-color: rgba(0,0,0,0.6);
+    animation: fadeinBack 0.5s ease;
+    animation-delay: 0.5s;
+    animation-direction: reverse;
+}
+.popup_disappear_1{
+    animation: popout 1s ease;
+    left:50%;
+}
+.popup_disappear_2 {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    content: '';
+    border-radius: 20px;
+    top:0%;
+    left:0%;
+}
+.popup_appear_1{
+    animation: xAxisForward 2s ease;
+    top:50%;
+    left:50%;
+}
+
+.popup_appear_2 {
+    animation: yAxisForward 2s ease;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    content: '';
+    border-radius: 20px;
+    top:0%;
+    left:0%;
+}
+.step{
+    background-color: #777777;
+    display: none;
+}
+#header{
+    display:flex;
+    height: 7%;
+}
+.header_step_button{
+    width: -webkit-fill-available;
+    margin: 0;
+    display: block;
+    color:black;
+    position: initial;
+    height: fit-content;
+    background-color: #828282;
+    padding: 0;
+}
+
+.header_step_button_disabled{
+    background-color: #3a3a3a;
+}
+.header_step_button_selected{
+    background-color: white;
+    height: 100%;
+    position: relative;
+}
+.header_step_description{
+    font-family: cursive;
+    font-size: 60%;
+}
+.header_step_title{
+    font-family: mplantin, monospace;
+    font-size: 120%;
+    font-weight: bold;
+}
+#body{
+    min-height: calc(83% - 25px);
+}
+body, html{
+    width: 100%;
+    height: 100%;
+    margin:0;
+    background-color: #777777;
+}
+
+#footer{
+    width: calc(100% - 20px);
+    background-color: black;
+    margin-top: 25px;
+    padding: 10px;
+    height: calc(10% - 20px);
+    position: relative;
+    display:flex;
+    color:white;
+}
+
+#buyCoffee{
+    position: absolute;
+    left: 83.5%;
+    top: 12px;
+
+}
+#becomePatreon{
+    height: 55px;
+    position: absolute;
+    left: 66%;
+    top: 10px;
+}
+
+@keyframes error-jolt {
+    100% {
+        border-color: inherit;
+        transform: translate3d(0, 0, 0);
+    }
+    10%, 90% {
+        border-color: red;
+        transform: translate3d(-2px, 0, 0);
+    }
+
+    20%, 80% {
+        transform: translate3d(4px, 0, 0);
+    }
+
+    30%, 50%, 70% {
+        transform: translate3d(-8px, 0, 0);
+    }
+
+    40%, 60% {
+        transform: translate3d(8px, 0, 0);
+    }
+}
+.error{
+    animation: error-jolt;
+    animation-duration: 2s;
+}
+#error{
+    z-index: 10;
+    font-family: monospace;
+    padding: 5px;
+    display:none;
+    background-color: #c38d45;
+    width: 20%;
+    border: black 4px solid;
+    border-radius: 30px;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+}
+.none{
+    opacity: 0;
+}
+
+#step35 {
+    height: 77vh;
+    position: absolute;
+    width: 100%;
+}
+#addSpells:hover{
+    cursor:pointer;
+}
+#addSpells{
+    color: #00b6ff;
+    -webkit-appearance: none;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+}

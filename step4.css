@@ -1,0 +1,35 @@
+/**
+ * Copyright (C) FrustratedProgrammer - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Elijah Anderson <contact@frustratedprogrammer>, April 2020
+ **/
+
+#step4_updates, #step4_detailed, #step4_length {
+	text-align: center;
+	width: 100%;
+	font-size: 200%;
+	font-family: ringbearer;
+	display: block;
+}
+
+#step4_detailed {
+	font-size: 170%;
+	font-family: mplantin;
+	color: #4C4C4C;
+}
+#step4_length {
+	font-size: 140%;
+	font-family: mplantin;
+	color: #4C4C4C;
+}
+
+#step4_generating {
+	display: block;
+	position: absolute;
+	font-family: ringbearer, sans-serif;
+	font-size: 300%;
+	transform: translate(-50%,-50%);
+	left: 50%;
+	top: 12%;;
+}

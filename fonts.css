@@ -1,0 +1,30 @@
+/**
+ * Copyright (C) FrustratedProgrammer - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Elijah Anderson <contact@frustratedprogrammer>, April 2020
+ **/
+
+
+@font-face {
+	font-family: ringbearer;
+	src: url("fonts/ringbearer.ttf");
+}
+@font-face {
+	font-family: mplantin;
+	src: url("fonts/mplantin.ttf");
+}
+@font-face {
+	font-family: mplantin;
+	src: url("fonts/mplantin_italic.ttf");
+	font-style: italic;
+}
+@font-face {
+	font-family: mplantin;
+	src: url("fonts/mplantin_bold.ttf");
+	font-weight: bold;
+}
+@font-face {
+	font-family: widelatin;
+	src: url("fonts/widelatin.ttf");
+}

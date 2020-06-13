@@ -1,0 +1,125 @@
+/**
+ * Copyright (C) FrustratedProgrammer - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Elijah Anderson <contact@frustratedprogrammer>, April 2020
+ **/
+
+
+#step35_AddInput{
+    position: absolute;
+    left: 98%;
+    top: 100%;
+    width: fit-content;
+    font-family: sans-serif;
+    font-size: 200%;
+    transform: translate(-100%, -100%);
+    padding: 6px;
+    background-color: #a5a5a5;
+}
+#step35Canvas{
+    border: black dashed 2px;
+}
+#step35_simpleSettings{
+    position: absolute;
+    left: 10%;
+    top: 10%;
+    width: 70px;
+    background-color: grey;
+    border-radius: 20px;
+    border: black 1px solid;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+#step35_simpleSettings img{
+    height: 50%;
+}
+#step35_simpleSettings button{
+    border: none;
+    border-top: black 1px solid;
+    border-bottom: black 1px solid;
+    width: 100%;
+    white-space: nowrap;
+    height: 20px;
+    border-radius: 5px;
+    background-color: #a1a1a6;
+    -webkit-appearance: none;
+}
+#step35_simpleSettings button:hover{
+    background-color: #737377;
+}
+#step35_more_settings{
+    display: none;
+    padding: 10px;
+    padding-top: 5%;
+    background-color: #A1A1A1;
+    height: 100%;
+    position: absolute;
+    width: 10%;
+}
+.step35_more_settings_box{
+    display: flex;
+}
+.step35_more_settings_box span{
+    width: -webkit-fill-available;
+}
+.step35_more_settings_box input[type=text]{
+    width: 200%;
+}
+.step35_more_settings_box input[type=number]{
+    width: 40%;
+}
+.none span, .none input{
+    display:none
+}
+#popup2 h3{
+    text-align: center;
+    font-size: 260%;
+    font-family: monospace;
+    margin-bottom: 0;
+}
+#popup2 span{
+    text-align: center;
+    width: 100%;
+    display: block;
+    color: #616161;
+    font-family: mplantin;
+}
+#popup2_body{
+    background-color: #888888
+}
+#popup2 table{
+    margin-left: auto;
+    margin-right: auto;
+}
+#popup2 th{
+    font-family: sans-serif
+}
+#popup2 td{
+    text-align: right;
+    font-family: mplantin;
+}
+#popup2 .popup2_template{
+    text-align:center;
+    font-family: monospace;
+}
+#step35_help:hover{
+    cursor: pointer;
+}
+#step35_help{
+    margin: 0;
+    position: absolute;
+    left: 100%;
+    transform: translateX(-100%);
+    white-space: nowrap;
+    top: 2%;
+}
+#step35_continue{
+    position: absolute;
+    left: 95%;
+    transform: translateX(-100%);
+    top: 2.7%;
+    font-size: 138%;
+    padding: 5px;
+    background-color: #a5a5a5;
+}

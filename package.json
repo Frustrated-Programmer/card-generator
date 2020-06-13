@@ -1,0 +1,21 @@
+{
+	"name": "card-generator",
+	"author": {
+		"name": "Elijah Anderson",
+		"email": "contact@frustratedprogrammer.com",
+		"url": "https://frustratedprogrammer.com"
+	},
+	"homepage": "https://github.com/Frustrated-Programmer/card-generator",
+	"readme": "",
+	"version": "1.0.0",
+	"dependencies": {
+		"stream-buffers": "latest",
+		"buffer": "latest",
+		"fluentReports": "latest",
+		"fontkit": "latest",
+		"browserify": "latest"
+	},
+	"devDependencies": {
+		"browserify": "latest"
+	}
+}
