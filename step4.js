@@ -2,7 +2,7 @@
  * Copyright (C) FrustratedProgrammer - All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential
- * Written by Elijah Anderson <contact@frustratedprogrammer>, April 2020
+ * Written by Elijah Anderson <contact@frustratedprogrammer.com>, April 2020
  **/
 
 let step5Canvas = document.getElementById('step5Canvas');
@@ -102,7 +102,7 @@ let default_template = [
     }
 ];
 
-class PDFGen{
+class PDFGen {
     constructor(template, image){
         this.template = template;
         this.image = image;
@@ -306,7 +306,8 @@ class PDFGen{
     finish(){
         return new Promise((cb) => {
             let keys = Object.keys(fonts);
-            let rpt = new Report("Dnd-Cards", {landscape: true,fonts:fonts})
+            let blober = new blob();
+            let rpt = new Report(blober, {landscape: true,fonts:fonts})
                 //.margins({left:20, top:20, bottom:20, right: 0})
                 .autoPrint(false)
                 .data(this.detail)
@@ -315,8 +316,8 @@ class PDFGen{
             for(let i =0;i<keys.length;i++){
                 rpt.registerFont(keys[i],{normal:fonts[keys[i]].stream.buffer});
             }
-            rpt.outputType(Report.renderType.buffer);
-                rpt.render(function(err, output){cb(output);});
+//            rpt.outputType(Report.renderType.buffer, blober);
+              rpt.render(function(err, output){cb(output);});
         });
     }
 }
@@ -355,9 +356,10 @@ pdf.addCard({x: 50, y: 50}, {
          */
 
         console.log(buffer);
-        let blober = new blob(buffer);
-        console.log(blober);
-        let url = blober.toBlobURL("application/pdf");
+/*        let blober = new blob();
+        blober.write(buffer);
+        console.log(blober); */
+        let url = buffer.toBlobURL("application/pdf");
         console.log(url);
 
         document.getElementById("step5_frame").src = url;
@@ -371,7 +373,7 @@ pdf.addCard({x: 50, y: 50}, {
 
 /*
 //TODO: this is where I'm testing turning a PDF into a buffer and then into a blobUrl
-const blob = require('blob-stream')
+//const blob = require('blob-stream')
 fetch("./test.pdf").then((Response) => {
     Response.arrayBuffer().then(function(buffer){
         console.log(buffer);

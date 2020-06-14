@@ -2,16 +2,16 @@
  * Copyright (C) FrustratedProgrammer - All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential
- * Written by Elijah Anderson <contact@frustratedprogrammer>, April 2020
+ * Written by Elijah Anderson <contact@frustratedprogrammer.com>, April 2020
  **/
 
 const classes = ["bard", "cleric", "wizard", "druid", "sorcerer", "warlock", "ranger", "paladin"];
 const schools = ["abjuration", "conjuration", "divination", "enchantment", "evocation", "illusion", "necromancy", "transmutation"];
 const steps = [1, 2, 3, 35, 4, 5];
 const spellsJSON = require("./spells.json");
-const Report = require('fluentReports' ).Report;
+const Report = require('fluentreports' ).Report;
 const fontkit = require("fontkit");
-const blob = require('blob-stream')
+const blob = require('fluentreports/lib/third-party/blob-stream')
 const streamBuffers = require('stream-buffers')
 require("buffer");
 let cards = {
