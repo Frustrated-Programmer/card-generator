@@ -4,7 +4,7 @@
  * Proprietary and confidential
  * Written by Elijah Anderson <contact@frustratedprogrammer>, April 2020
  **/
-
+const step3Div = document.getElementById("step3");
 const step35Canvas = document.getElementById("step35Canvas");
 const step35_img = document.getElementById("step3_preview_front");
 const step35_simpleSettings = document.getElementById("step35_simpleSettings");
@@ -21,8 +21,9 @@ const step35_settings_fontsize = document.getElementById("step35_settings_fontsi
 const step35_settings_text = document.getElementById("step35_settings_text");
 const step35_settings_fontStyle = document.getElementById("step35_settings_fontStyle");
 const step35_settings_textAlign = document.getElementById("step35_settings_textAlign");
-const templates = ["title", "school", "level", "description", "range", "casting", "materials", "athigherlevel"];
-let unusedTemplates = [...templates];
+
+const docs = document.getElementById('docs')
+
 let canvasStats = {
     cursorX: 0,
     cursorY: 0,
@@ -31,16 +32,17 @@ let canvasStats = {
     leftMouseDown: false,
     rightMouseDown: false
 };
-let addedElems = [];
 let selectedElem;
 let step35imgRatio = step35_img.height / step35_img.width;
 let imgH = step35Canvas.height;
 let imgW = imgH / step35imgRatio;
 let scaleParam = {
-    x:0,
-    y:0,
-    zoom:1,
-}
+    x: 0,
+    y: 0,
+    zoom: 1,
+    offsetX:0,
+    offsetY:0,
+};
 let offset = {
     x: (step35Canvas.width / 2) - (imgW / 2),
     y: (step35Canvas.height / 2) - (imgH / 2)
@@ -53,14 +55,28 @@ if(!step35imgRatio) setTimeout(function(){
 }, 50);
 step35Canvas.width = step35Canvas.parentElement.parentElement.clientWidth - 8;
 step35Canvas.height = step35Canvas.parentElement.parentElement.clientHeight - 41.82;
+step35Canvas.onmouseleave = function(){
+    if(!step35_more_settings.showing) disableRightClick = false;
+};
+step35Canvas.onmouseenter = function(){
+    disableRightClick = true;
+}
 step35Canvas.onmousemove = function(ev){
+    disableRightClick = true;
+
     if(ev.buttons !== 1) canvasStats.leftMouseDown = false;
     if(ev.buttons !== 2) canvasStats.rightMouseDown = false;
-    disableRightClick = false;
+    else{
+        scaleParam.x += (ev.movementX / scaleParam.zoom);
+        scaleParam.y += (ev.movementY / scaleParam.zoom);
+    }
+    docs.innerText = `scX: ${scaleParam.x}, wid: ${step35Canvas.width}, zm: ${scaleParam.zoom}, x: ${canvasStats.cornerX}, offX: ${scaleParam.offsetX}, curX: ${canvasStats.cursorX}`;
+
     canvasStats.pageX = ev.pageX;
     canvasStats.pageY = ev.pageY;
-    canvasStats.cursorX = (ev.pageX - step35Canvas.offsetLeft) - offset.x;
-    canvasStats.cursorY = (ev.pageY - (step35Canvas.offsetTop + header.clientHeight)) - offset.y;
+    canvasStats.cornerX = ev.pageX;
+    canvasStats.cornerY = (ev.pageY - (step35Canvas.offsetTop + header.clientHeight + step3Div.offsetHeight));
+
     if(selectedElem && canvasStats.leftMouseDown){
         function changeLeft(){
             selectedElem.width -= (canvasStats.cursorX - selectedElem.x);
@@ -101,11 +117,12 @@ step35Canvas.onmousemove = function(ev){
         }
         else if(selectedElem.hoveringCircles.left) changeLeft();
         else if(selectedElem.moving){
-            selectedElem.x = ((ev.pageX - step35Canvas.offsetLeft) - offset.x) - (selectedElem.width / 2);
-            selectedElem.y = ((ev.pageY - step35Canvas.offsetTop) - (offset.y * 2.5)) - (selectedElem.height / 2);
+            selectedElem.x = canvasStats.cursorX - (selectedElem.width / 2)
+            selectedElem.y = canvasStats.cursorY - (selectedElem.height / 2)
         }
         if(step35_more_settings.showing) step35_more_settings.updateOwnValues();
     }
+
 };
 step35Canvas.onmousedown = function(ev){
     if(ev.button === 0){
@@ -124,9 +141,22 @@ step35Canvas.onmouseup = function(ev){
     if(ev.button === 2) canvasStats.rightMouseDown = false;
     if(selectedElem) selectedElem.moving = false;
 };
+step35Canvas.oncontextmenu = function(){
+    return false;
+};
 window.onmousewheel = function(ev){
-    console.log(ev);
-    //TODO allow scrolling / zooming
+    scaleParam.zoom *= (ev.deltaY < 0) ? 1.1 : 0.5;
+    scaleParam.offsetX = canvasStats.cornerX / scaleParam.zoom;
+    scaleParam.offsetY = canvasStats.cornerY / scaleParam.zoom;
+    if(scaleParam.zoom <= 1){
+        scaleParam = {
+            zoom:1,
+            offsetX:0,
+            offsetY:0,
+            x:0,
+            y:0
+        }
+    }
 };
 window.onkeydown = function(ev){
     if(!step35Canvas === document.activeElement) return;
@@ -149,6 +179,7 @@ window.onkeydown = function(ev){
 step35_more_settings.showing = false;
 step35_more_settings.show = function(){
     step35_more_settings.showing = true;
+    disableRightClick = true;
     step35_simpleSettings.style.display = "none";
     step35_more_settings.updateOwnValues();
     step35_more_settings.style.display = "block";
@@ -191,6 +222,7 @@ step35_more_settings.updateOwnValues = function(){
     step35_settings_fontStyle.value = selectedElem.fontStyle;
     step35_settings_textAlign.value = selectedElem.textAlign;
 };
+step35_more_settings.hide();
 
 function DragDroppableElem(text){
     this.id = addedElems.length > 0 ? addedElems[addedElems.length - 1].id + 1 : 0;
@@ -303,7 +335,7 @@ DragDroppableElem.prototype.drawCircle = function(circleX, circleY, which){
         context.fill();
         context.beginPath();
         context.fillStyle = "#000000";
-        context.arc(cur.x, cur.y, 1, 0, 2 * Math.PI);
+       // context.arc(cur.x, cur.y, 1, 0, 2 * Math.PI);
         context.fill();
 
 
@@ -392,7 +424,7 @@ DragDroppableElem.prototype.math = function(){
             disableRightClick = true;
             step35_simpleSettings.style.display = "block";
             step35_simpleSettings.style.left = canvasStats.pageX + "px";
-            step35_simpleSettings.style.top = canvasStats.pageY - 50 + "px";
+            step35_simpleSettings.style.top = canvasStats.pageY - 100 + "px";
         }
         else{
             this.moving = false;
@@ -400,6 +432,7 @@ DragDroppableElem.prototype.math = function(){
     }
 };
 DragDroppableElem.prototype.draw = function(context){
+
     this.math();
     context.beginPath();
     context.rect(this.x, this.y, this.width, this.height);
@@ -409,10 +442,10 @@ DragDroppableElem.prototype.draw = function(context){
     context.fillStyle = "#000000";
 
     let size = this.fontSize || this.height;
-        do{
-            size--;
-            context.font = size + "px " + this.fontStyle;
-        } while(context.measureText(this.text).width > this.width);
+    do{
+        size--;
+        context.font = size + "px " + this.fontStyle;
+    } while(context.measureText(this.text).width > this.width);
 
     context.textAlign = this.textAlign.toLowerCase();
     if(this.textAlign.toLowerCase() === "left") context.fillText(this.previewText, this.x, this.y + this.height - (this.height / 4));
@@ -448,6 +481,7 @@ DragDroppableElem.prototype.draw = function(context){
     }
 };
 
+step35_simpleSettings.style.display = "none";
 step35_simpleSettings.onmouseenter = function(){
     if(selectedElem){
         selectedElem.hoveringSettings = true;
@@ -487,8 +521,8 @@ step35_settings_width.oninput = function(){
         return;
     }
     if(this.value < 1) this.value = 1;
-    if(this.value > step35Canvas.width - (step35Canvas.width - selectedElem.x)) this.value = step35Canvas.width  - (step35Canvas.width - selectedElem.x);
-    this.value = Math.round(parseInt(this.value,10));
+    if(this.value > step35Canvas.width - (step35Canvas.width - selectedElem.x)) this.value = step35Canvas.width - (step35Canvas.width - selectedElem.x);
+    this.value = Math.round(parseInt(this.value, 10));
     selectedElem.width = parseInt(this.value, 10);
     this.value = selectedElem.width;
 };
@@ -498,8 +532,8 @@ step35_settings_height.oninput = function(){
         return;
     }
     if(this.value < 0) this.value = "";
-    if(this.value > step35Canvas.height - (step35Canvas.height - selectedElem.y)) this.value = step35Canvas.height  - (step35Canvas.height - selectedElem.y);
-    this.value = Math.round(parseInt(this.value,10));
+    if(this.value > step35Canvas.height - (step35Canvas.height - selectedElem.y)) this.value = step35Canvas.height - (step35Canvas.height - selectedElem.y);
+    this.value = Math.round(parseInt(this.value, 10));
     selectedElem.width = parseInt(this.value, 10);
     this.value = selectedElem.height;
 };
@@ -578,17 +612,24 @@ document.getElementById("step35_AddInput").onclick = function(){
     if(unusedTemplates.length) unusedTemplates.splice(0, 1);
 };
 document.getElementById("step35_continue").onclick = function(){
-    step35Custom = [];
+    template = {
+        details:[]
+    };
     for(let i = 0; i < addedElems.length; i++){
-        step35Custom.push(addedElems[i].JSON());
+        template.details.push(addedElems[i].JSON());
     }
-    console.log(step35Custom);
+    console.log(`Created template:`);
+    console.log(template);
     currentStep++;
     updateStep();
 };
 
+
 function updateStep35(){
     //RESET CANVAS
+    canvasStats.cursorX = (((canvasStats.cornerX / scaleParam.zoom) - offset.x) + (scaleParam.offsetX - (scaleParam.offsetX / scaleParam.zoom))) - scaleParam.x;
+    canvasStats.cursorY = (((canvasStats.cornerY / scaleParam.zoom) - offset.y) + (scaleParam.offsetY - (scaleParam.offsetY / scaleParam.zoom))) - scaleParam.y;
+
     imgH = step35Canvas.height;
     imgW = imgH / step35imgRatio;
     offset = {
@@ -601,20 +642,22 @@ function updateStep35(){
     context.moveTo(0, 0);
     context.fillStyle = "#777777";
     context.fillRect(0, 0, step35Canvas.width, step35Canvas.height);
-    //context.translate((step35Canvas.width / 2) - (imgW / 2) + margin, (step35Canvas.height / 2) - (imgH / 2) + margin);
-    context.translate(offset.x,offset.y);
-    context.drawImage(step35_img, 0, 0, imgW - ((margin / step35imgRatio) * 2), imgH - (margin * 2));//(step35Canvas.width / 2) - (imgW / 2) + margin, (step35Canvas.height / 2) - (imgH / 2) + margin
-    for(let i = 0; i < addedElems.length; i++){
-        addedElems[i].draw(context);
-    }
+
+    context.translate(scaleParam.offsetX, scaleParam.offsetY);
+    context.scale(scaleParam.zoom, scaleParam.zoom);
+    context.translate(-scaleParam.offsetX, -scaleParam.offsetY);
+
+    context.translate(scaleParam.x, scaleParam.y);
+    context.translate(offset.x, offset.y);
     context.beginPath();
     context.font = "italic 10pt Calibri";
     context.fillStyle = "#000000";
-    context.fillText("CURSORS: " + canvasStats.cursorX + " x " + canvasStats.cursorY, -500, 100);
-    context.fillText("PAGE: " + canvasStats.pageX + " x " + canvasStats.pageY, -500, 110);
-    context.fillText("OFFSET: " + offset.x + " x " + offset.y, -500, 120);
-    context.fillText("CANVAS: " + step35Canvas.offsetLeft + " x " + step35Canvas.offsetTop, -500, 130);
+    context.arc(canvasStats.cursorX, canvasStats.cursorY, 1, 0, 2 * Math.PI);
     context.fill();
+    context.drawImage(step35_img, 0, 0, 300, 420);//imgW - ((margin / step35imgRatio) * 2), imgH - (margin * 2)//(step35Canvas.width / 2) - (imgW / 2) + margin, (step35Canvas.height / 2) - (imgH / 2) + margin
+    for(let i = 0; i < addedElems.length; i++){
+        addedElems[i].draw(context);
+    }
 }
 
 step35Canvas.focus();
@@ -625,4 +668,3 @@ setTimeout(function(){
     step35Int = setInterval(updateStep35, 50);
 }, 1000);
 
-step35_img.src = "./images/front_lime.png";

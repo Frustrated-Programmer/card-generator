@@ -4,7 +4,6 @@
  * Proprietary and confidential
  * Written by Elijah Anderson <contact@frustratedprogrammer>, April 2020
  **/
-
 .step3_img_choice_container {
     width: 30%;
 }
@@ -102,4 +101,31 @@
 .fadeOut {
     animation: fadeOpacity 0.5s reverse;
     opacity: 0;
+}
+@keyframes slideUpDown {
+    0%, 100%{
+        height: 90px;
+        animation-timing-function: ease-in-out;
+    }
+    50%{
+        height: 130px;
+        animation-timing-function: ease-in-out;
+    }
+}
+#step3ArrowGroup{
+    position: absolute;
+    top:90%;
+    left:0;
+    transform: translateY(-100%);
+    margin: 0;
+    font-size: 120%;
+    font-family: fantasy;
+}
+#step3Arrow{
+    animation-timing-function: ease-in-out;
+    animation: slideUpDown;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    width: 71px;
+    height: 90px;
 }

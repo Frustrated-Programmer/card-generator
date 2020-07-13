@@ -59,6 +59,9 @@
 		<p id="error_msg"></p>
 		<button id="close_error" style="transform: translate(-50%,-50%); float: right;">Close</button>
 	</div>
+	<div id="step0" class="step" style="display: block; position: absolute; top: 50%; left: 50%; transform: translate(-50%); z-index: -1;">
+		<p>Your JavaScript is disabled or blocked. This site relies heavily of JavaScript, so if you wish to use this site:<br>Please allow Javascript and reload the page.</p>
+	</div>
 	<div id="step1" class="step" style="display: none;">
 		<h1 id="step1_title">Choose Your Spell Book!</h1>
 		<div style="display:flex;" class="class_selection">
@@ -98,15 +101,16 @@
 		<h1 id="step2_title">Are these the spells?</h1>
 		<span id="step2_subtitle">Check all these spells to double check you have all of your desired spells.<br>Hover over a spell for a while to get all of that spell's details.</span>
 		<table id="step2_spell_list"></table>
+		<div id="spell_preview"></div>
 	</div>
-	<div id="step3" class="step">
+	<div id="step3" class="step" style="left:1000px; top:-1000px;">
 		<div>
 			<h1 id="step3_title">Note: backside of cards will be resized to match the size of the frontside</h1>
 			<div id="step3_frontside" class="step3_img_choice_container">
 				<select id="front_card_select">
 					<option value="none" hidden selected disabled>Select Frontside</option>
 					<option value="custom" disabled hidden id="step_3_front_custom"></option>
-					<option>nBeebz's spell cards</option>
+					<option value="nbeebz">nBeebz's spell cards</option>
 					<option>Colored template cards</option>
 					<option>Classed template cards</option>
 					<option class="step3_upload" id="front_select_upload">
@@ -170,8 +174,12 @@
 			</div>
 			<button disabled id="step3_approve" class="none">Continue</button>
 		</div>
+		<div id="step3ArrowGroup">
+			<p>Extra Settings</p>
+			<img src="./images/arrow.png" id="step3Arrow">
+		</div>
 	</div>
-	<div id="step35" class="step" >
+	<div id="step35" class="step">
 		<div id="step35_more_settings">
 			<div class="step35_more_settings_box">
 				<span>Text:</span>
@@ -196,7 +204,7 @@
 					<option selected>Left</option>
 					<option>Center</option>
 					<option>Right</option>
-					</select>
+				</select>
 			</div>
 			<div class="step35_more_settings_box">
 				<span>Font type:</span>
@@ -229,10 +237,12 @@
 		</div>
 		<div>
 			<h3>Place inputs on your template.</h3>
+			<span id="docs"></span>
 			<button id="step35_continue">Continue</button>
 			<h1 id="step35_help">{ ? }</h1>
 			<canvas id="step35Canvas" width="1000" height="350">
-				Unfortunately Your browser or extensions don't support or is disabling the &lt;canvas>. Go back to Step
+				Unfortunately Your browser or extensions don't support or is disabling the &lt;canvas> tag. Go back to
+				Step
 				3 and use a pre-made template.
 			</canvas>
 			<button id="step35_AddInput">Add Input</button>
@@ -246,15 +256,17 @@
 	<div id="step4" class="step">
 		<h1 id="step4_generating">Generating. . .</h1>
 		<img src="images/Loading.svg" style="display: block; margin-left: auto; margin-right: auto;">
-		<span id="step4_updates"></span>
+		<span id="step4_updates">Setting up Service worker</span>
 		<span id="step4_detailed"></span>
-		<span id="step4_length">This tends to take several minutes. Please be patient.</span>
+		<span id="step4_length">This step tends to take several minutes. Please be patient.</span>
 	</div>
 	<div id="step5" class="step">
 		<h1 id="step5_generating">Generating. . .</h1>
 		<img src="images/Loading.svg" style="display: block; margin-left: auto; margin-right: auto;">
 		<iframe id="step5_frame"></iframe>
-		<canvas id="step5Canvas" style="display: none"/>
+		<img id-="step5Secret" style="opacity: 0; position: absolute; left:1000px; top:-1000px;">
+		<canvas id="step5Canvas" width="516" height="792" style="display: none"/>
+		<canvas id="step5Canvas2" style="display: none"/>
 	</div>
 	<div id="popup1" class="popup">
 		<div id="popup1_container" class="popup_container">
@@ -415,7 +427,7 @@
 						<th>ENDING</th>
 					</tr>
 					<tr>
-						<td class="popup2_template"step35_help>{title}</td>
+						<td class="popup2_template" step35_help>{title}</td>
 						<td>The title of the spell.</td>
 					</tr>
 					<tr>
@@ -454,29 +466,237 @@
 			</div>
 		</div>
 	</div>
-	<div id="popup3" class="popup">
+	<div id="popup3" style="z-index: 12;" class="popup">
 		<div id="popup3_container" class="popup_container">
 			<div id="popup3_body" class="popup_body">
-				<h3>Missing spells? Add them here</h3>
-				<p>This only TEMPORARILY adds the spells, as I cannot legally distribute them.</p>
+				<h3 style="margin-bottom: 0;">Missing spells? Add them here</h3>
+				<p style="margin-bottom: 0;">This only TEMPORARILY adds the spells, as I cannot legally distribute them.<br>Note: you will have to go back to Step 1 for these spells to be accessed.</p>
+				<div id="popup3_buttons">
+					<span>
+						<button id="addspells_button_add">Add Spell</button>
+						<button id="addspells_button_exit">Cancel</button>
+					</span>
+					<span>
+						<button id=addspells_button_done>Add & Exit</button>
+						<button id="addspells_button_reset">Reset</button>
+					</span>
+				</div>
 				<table>
 					<tr>
-						<td><input id="addspell_title" placeholder="title"></td>
-						<td><input id="addspell_level" placeholder="level" type="number"></td>
-						<td></td>
+						<td style="width: 1px; vertical-align: top; padding-top: 20px;">
+							<span style="white-space: nowrap">Name: <input style="float:right; width: 100px" id="addspell_name"></span>
+							<span style="white-space: nowrap">Level: <input id="addspell_level" style="width: 100px" type="number"></span>
+							<div id="specialSelect" style="width: 99%; height: 32px; position: relative; display:block;">
+								<div id="specialSelect_title" style="height: 32px; width: 100%;background-color: white;border:black solid 1px;">
+									<img id="specialSelect_value_img">
+									<span id="specialSelect_value">Select School</span><span style="float:right">▼</span>
+								</div>
+								<div id="specialSelect_values" style="display: none; position: absolute; width: 100%; z-index: 10">
+									<div class="specialSelect_item">
+										<img src="images/icons/icon_abjuration.png">
+										<span>Abjuration</span>
+									</div>
+									<div class="specialSelect_item">
+										<img src="images/icons/icon_conjuration.png">
+										<span>Conjuration</span>
+									</div>
+									<div class="specialSelect_item">
+										<img src="images/icons/icon_divination.png">
+										<span>Divination</span>
+									</div>
+									<div class="specialSelect_item">
+										<img src="images/icons/icon_enchantment.png">
+										<span>Enchantment</span>
+									</div>
+									<div class="specialSelect_item">
+										<img src="images/icons/icon_evocation.png">
+										<span>Evocation</span>
+									</div>
+									<div class="specialSelect_item">
+										<img src="images/icons/icon_illusion.png">
+										<span>Illusion</span>
+									</div>
+									<div class="specialSelect_item">
+										<img src="images/icons/icon_necromancy.png">
+										<span>Necromancy</span>
+									</div>
+									<div class="specialSelect_item">
+										<img src="images/icons/icon_transmutation.png">
+										<span>Transmutation</span>
+									</div>
+								</div>
+							</div>
+						</td>
+						<td style="width: 250px">
+							<br>
+							<div>
+								<span style="white-space: nowrap"><img style="height: 16px;" src="./images/nBeebz/verbal.png"/>Verbal:<input id="addspell_verbal" type="checkbox" style="float: right" checked=""></span><br>
+								<span style="white-space: nowrap"><img style="height: 16px;" src="./images/nBeebz/somatic.png"/>Somatic:<input id="addspell_somatic" type="checkbox" style="float: right" checked=""></span><br>
+								<span style="white-space: nowrap"><img style="height: 16px;" src="./images/nBeebz/concentration.png"/>Concentration:<input id="addspell_concentration" style="float: right" type="checkbox" checked=""></span><br>
+								<span style="white-space: nowrap"><img style="height: 16px;" src="./images/nBeebz/ritual.png"/>Ritual:<input id="addspell_ritual" style="float: right" type="checkbox" checked=""></span>
+							</div>
+							<div id="popup4_material_container">
+								<img src="./images/nBeebz/material.png">
+								<div>
+									<table style="height: 100%">
+										<tr>
+											<td>Material Count:</td>
+											<td class="popup4_material_form_td"><input id="addspell_materialCount" type="number"></td>
+										</tr>
+										<tr>
+											<td>Materials:</td>
+											<td class="popup4_material_form_td">
+												<button id="popup3_editMaterial"></button>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</td>
+						<td style="vertical-align: top; padding-top: 20px;">
+							<div id="popup4_extratexts">
+								<span>Range: <button id="popup3_editRange"></button></span>
+								<span>Duration: <button id="popup3_editDuration"></button></span>
+								<span>Casting: <button id="popup3_editCasting"></button></span>
+								<span>Description: <button id="popup3_editDescription"></button></span>
+								<span>At Higher Levels: <button id="popup3_editAtHigherLevel"></button></span>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						
+						<td colspan="3">
+							<div id="popup_create_spells_class_group" style="position: relative; width: 97%;">
+								<span id="popup_create_spells_class_group_title"
+									  class="popup_create_spells_group_title">Class</span>
+								<div>
+									<div style="display: flex">
+										<div class="popup_create_spells_class_item popup_custom_spells_item">
+											<img src="images/icons/class_bard.png">
+											<span>Bard</span>
+										</div>
+										<div class="popup_create_spells_class_item popup_custom_spells_item">
+											<img src="images/icons/class_cleric.png">
+											<span>Cleric</span>
+										</div>
+										<div class="popup_create_spells_class_item popup_custom_spells_item">
+											<img src="images/icons/class_druid.png">
+											<span>Druid</span>
+										</div>
+										<div class="popup_create_spells_class_item popup_custom_spells_item">
+											<img src="images/icons/class_paladin.png">
+											<span>Paladin</span>
+										</div>
+										
+										<div class="popup_create_spells_class_item popup_custom_spells_item">
+											<img src="images/icons/class_ranger.png">
+											<span>Ranger</span>
+										</div>
+										<div class="popup_create_spells_class_item popup_custom_spells_item">
+											<img src="images/icons/class_sorcerer.png">
+											<span>Sorcerer</span>
+										</div>
+										<div class="popup_create_spells_class_item popup_custom_spells_item">
+											<img src="images/icons/class_warlock.png">
+											<span>Warlock</span>
+										</div>
+										<div class="popup_create_spells_class_item popup_custom_spells_item">
+											<img src="images/icons/class_wizard.png">
+											<span>Wizard</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</td>
 					</tr>
 				</table>
-				<!-- TODO: Add the ability to add spells. -->
 			</div>
 		</div>
 	</div>
-
+	<div id="popup4" style="display: none; z-index: 13;">
+		<div id="popup4_body">
+			<h2 style="font-size: 200%; text-align: center; margin-bottom: 1px; ">Editing: <span id="popup4_title" style="font-family: ringbearer;"></span></h2>
+			<textarea style="margin-left: auto;margin-right: auto;display: block;width: 80%;height: 60%;"></textarea>
+			<div style="height: 10%; width: 35%; margin-top: 2%;float:right;">
+				<button id="popup4Save">SAVE</button>
+				<button id="popup4Cancel">CANCEL</button>
+			</div>
+		</div>
+	</div>
+	<div id="popup5" class="popup" style="z-index: 12;">
+		<div id="popup5_container" class="popup_container">
+			<div id="popup5_body" class="popup_body">
+				<h2 style="font-size: 200%; text-align: center; margin-bottom: 1px; ">Settings</span></h2>
+				<div>
+					<table id="settings_table" >
+						<tr>
+							<td rowspan="2">Card Size:</td>
+							<td>Width</td>
+							<td class="settings_table_td"><input type="number" placeholder="Auto" min="1" max="612" id="settingswidth"></td>
+						</tr>
+						<tr>
+							<td>Height</td>
+							<td class="settings_table_td"><input type="number" placeholder="Auto" min="1" max="792" id="settingsheight"></td>
+						</tr>
+						<tr>
+							<td rowspan="2">Cards Per Page:</td>
+							<td>Horizontally</td>
+							<td class="settings_table_td"><input type="number" placeholder="Auto" min="1" max="612" id="settingshorizontally"></td>
+						</tr>
+						<tr>
+							<td>Vertically</td>
+							<td class="settings_table_td"><input type="number" placeholder="Auto" min="1" max="792" id="settingsvertically"></td>
+						</tr>
+					</table>
+					<div id="settings_buttons">
+					<button id="settings_export">Export Custom Spells</button>
+					<button id="settings_import">Import Custom Spells</button>
+					<button id="settings_remove" style="font-size: 120%">Remove all Custom Spells</button>
+					</div>
+					<input type="file" id="popup5_upload" accept="json" style="display:none">
+					<br>
+					<table>
+						<tr>
+							<td rowspan="2" style="font-family: ringbearer;font-size: 120%;">Card's Border</td>
+							<td>Thickness:</td>
+							<td><input id="settingsThickness" type="range" min="0" max="100"></td>
+							<td rowspan="2" style="position:relative;"><div style="margin-left: 10px;
+    position: absolute;
+    top: 0;"><div id="settingsPreview" style="border:0px solid black"><img src="./images/Back_Simple.png"></div><img id="settingsPreviewImg" src="./images/Back_Simple.png"></div></td>
+						</tr>
+						<tr>
+							<td>Color:</td>
+							<td><input id="settingsColor" style="width: 95%;" type="color"></td>
+						</tr>
+					</table><br>
+					<p style="font-family: mplantin;font-size: 120%; text-align: center;">Any questions just email: <em>contact&#64;frustratedprogrammer.com</em><br>Or leave an issue on the <a href="https://github.com/Frustrated-Programmer/card-generator">GitHub</a> page</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="popup6" class="popup" style="z-index: 10">
+		<div id="popup6_container" class="popup_container">
+			<div id="popup6_body" class="popup_body">
+				<h2 style="font-size: 200%; text-align: center; margin-bottom: 1px; ">Does this look right?</h2>
+				<p>If everything looks good then (thumbsup), I did my job!<br><br>Otherwise I have more settings you can customize <span id="popup6_special">here</span>,<br>or click on the cog where the arrow is pointing.</p>
+				<p>Any questions just email: <em>contact&#64;frustratedprogrammer.com</em><br>Or leave an issue on the <a href="https://github.com/Frustrated-Programmer/card-generator">GitHub</a> page</p>
+				<div id="step6ArrowGroup">
+					<p>Extra Settings</p>
+					<img src="./images/curved-arrow.png" style="float:left;" id="step6Arrow">
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 <div id="footer">
+	<button id="settings"><img src="./images/Cog.png"></button>
 	<p>Created by <a target="_blank" rel="noopener noreferrer" href="http://frustratedprogrammer.com">Elijah
 		Anderson</a>.<br>Full credit and licences can be found: <a target="_blank" rel="noopener noreferrer"
 																   href="./credits.html">Here</a></p>
-	<p style="margin-left: 15px; width: 34%;">Note: Spells here are only spells in the SRD that are legally allowed to be distributed. To temporarily add spells click <button id="addSpells">here</button></p>
+	<p style="margin-left: 15px; width: 34%;">Note: Spells here are only spells in the SRD that are legally allowed to
+		be distributed. To temporarily add spells click
+		<button id="addSpells">here</button>
+	</p>
 	<div id="becomePatreon">
 		<a style="height: inherit; width: inherit" href="https://www.patreon.com/bePatron?u=32078542">
 			<img style="height: inherit; width: inherit" src="./images/become_a_patron_button.png"
@@ -533,6 +753,5 @@
 	</div>
 </div>
 </body>
-<script src="./pdfkit.standalone.js"></script>
 <script src="./browsered.js"></script>
 </html>

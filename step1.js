@@ -46,7 +46,6 @@ let trueFalseValues = ["somatic", "ritual", "verbal", "material", "concentration
 for(let i = 0; i < classes.length; i++){
     bttns.push(document.getElementById(classes[i] + "_selection"));
     bttns[bttns.length - 1].onclick = function(){
-        //TODO: ANIMATE transition from step 1 to step 2
         step1Function = `function checker(data){ return data.classes.${classes[i]}; }`;
         currentStep++;
         updateStep();
@@ -139,7 +138,6 @@ function updatePopupStep1(){
             success = false;
         }
         if(success === true){
-            //TODO: ANIMATE transition from step 1 to step 2
             hidePopup(1, true);
             step1Function = funct;
             currentStep++;
@@ -182,7 +180,8 @@ function updatePopupStep1(){
     if(Step1PopupData.class.andor === "and"){
         class_andor_group.firstElementChild.classList.remove("popup_custom_spells_highlight");
         class_andor_group.lastElementChild.classList.add("popup_custom_spells_highlight");
-    } else{
+    }
+    else{
         class_andor_group.firstElementChild.classList.add("popup_custom_spells_highlight");
         class_andor_group.lastElementChild.classList.remove("popup_custom_spells_highlight");
     }

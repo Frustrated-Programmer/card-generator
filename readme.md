@@ -27,16 +27,3 @@ This page is the least important, but without a loading screen user's may thing 
 ###### Show cards
 This page is where the user's see a PDF of all their cards front and backs aligned. The user can then download their PDF or just print them from there.
 
-
-### Planned Features:
-##### General:
- * Allow user to add spells to the database temporarily.
- * Allow user to import / export the spell database
- * Allow user to determine card size.
- ##### Step 2:
- * Allow user to hover over a spell to get details about it.
- * Allow user to add spells.
-##### Step 4:
- * Tell the user what card it's currently generating.
- * Tell the user an ETA when it will be done
- * Play sound when generation is completed.

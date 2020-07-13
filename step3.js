@@ -4,7 +4,7 @@
  * Proprietary and confidential
  * Written by Elijah Anderson <contact@frustratedprogrammer>, April 2020
  **/
-
+template = null;
 const colors = ["blue","brown","green","lime","orange","purple","red","yellow"];
 let step3_approve = document.getElementById('step3_approve');
 step35.style.display = "none";
@@ -30,12 +30,13 @@ function updateFile(imgElem,file){
     }
 }
 
+front_select.disabled = false;
+back_select.disabled = false;
 //FRONT
 let step3_front_hiddenInput = document.getElementById('step3_front_hiddenInput');
 let select_front_for_colors = document.getElementById('select_front_for_colors');
 let select_front_for_class = document.getElementById('select_front_for_class');
 let step3_preview_front = document.getElementById('step3_preview_front');
-let front_select = document.getElementById('front_card_select');
 let step_3_front_custom = document.getElementById('step_3_front_custom');
 step3_front_hiddenInput.onchange = function(){
     let file = this.files[0];
@@ -56,7 +57,7 @@ front_select.onchange = function(ev){
     select_front_for_class.style.display = "none";
     step3_preview_front.style.display = "block";
     switch(this.value){
-        case 'nBeebz\'s spell cards':
+        case 'nbeebz':
             step3_preview_front.src = "images/nBeebz/example_"+schools[Math.round(Math.random() * (schools.length-1))]+".png";
             break;
         case 'Colored template cards':
@@ -91,9 +92,7 @@ select_front_for_class.onchange = function(){
     checkIfCanApprove();
 };
 
-
 //BACK
-let back_select = document.getElementById('back_card_select');
 let step3_back_hiddenInput = document.getElementById('step3_back_hiddenInput');
 let step3_preview_back = document.getElementById('step3_preview_back');
 let step_3_back_custom = document.getElementById('step_3_back_custom');
@@ -165,15 +164,24 @@ function checkIfCanApprove(){
 function nextStep(){
     step3Choices.frontChoice = front_select.value;
     step3Choices.frontSrc = step3_preview_front.src;
+    step3Choices.front = true;
     step3Choices.backChoice = back_select.value;
     step3Choices.backSrc = step3_preview_back.src;
-    if(step3Choices.backSrc === "http://:0/") step3Choices.backSrc = false;
-
+    if(step3Choices.backSrc === "http://:0/"){
+        step3Choices.backSrc = false;
+        step3Choices.back = false;
+    }
+    else step3Choices.back = true;
     if(front_select.selectedIndex === 1){
         currentStep++;
         step3Choices.front = "custom"
     }
-    else currentStep+=2;
-
+    else {
+        currentStep+=2;
+        if(front_select.selectedIndex !== 2){
+            template = JSON.parse(JSON.stringify(ColorAndClassTemplate));
+        }
+        else template = {details:nbeebz,back:{},image:{}};
+    }
     updateStep();
 }

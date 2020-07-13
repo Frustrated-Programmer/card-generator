@@ -1,6 +1,6 @@
 [
 	{
-		"name": "Acid Arrow",
+		"name": "Melf's Acid Arrow",
 		"classes": [
 			"wizard"
 		],
@@ -278,7 +278,7 @@
 		"description": "<p>You create an invisible, magical eye within range that hovers in the for the duration.</p><p>You mentally recieve visual information from the eye, which has normal vision and darkvision out to 30 feet. The eye can look in every direction.</p><p>As an action, you can move the eye up to 30 feet in any direction. There is no limit to how far away from you the eye can move, but it can&#39;t enter another plane of existence. A solid barrier blocks the eye&#39;s movement, but the eye can pass through an opening as small as 1 inch in diameter.</p>"
 	},
 	{
-		"name": "Arcane Hand",
+		"name": "Bigby's Hand",
 		"classes": [
 			"wizard"
 		],
@@ -315,7 +315,7 @@
 		"description": "<p>You touch a closed door, window, gate, chest, or other entryway, and it becomes locked for the duration. You and the creatures you designate when you cast this spell can open the object normally. You can also set a password that, when spoken within 5 feet of the object, suppresses this spell for 1 minute. Otherwise, it is impassable until it is broken or the spell is dispelled or suppressed. Casting knock on the object suppresses arcane lock for 10 minutes.</p><p>While affected by this spell, the object is more difficult to break or force open; the DC to break it or pick any locks on it increases by 10.</p>"
 	},
 	{
-		"name": "Arcane Sword",
+		"name": "Mordenkainen's Sword",
 		"classes": [
 			"bard",
 			"wizard"
@@ -334,7 +334,7 @@
 		"description": "<p>You create a sword-shaped plane of force that hovers within range. It lasts for the duration.</p><p>When the sword appears, you make a melee spell attack against a target of your choice within 5 feet of the sword. On a hit, the target takes 3d10 force damage. Until the spell ends, you can use a bonus action on each of your turns to move the sword up to 20 feet to a spot you can see and repeat this attack against the same target or a different one.</p>"
 	},
 	{
-		"name": "Arcanist's Magic Aura",
+		"name": "Nystul's Magic Aura",
 		"classes": [
 			"wizard"
 		],
@@ -508,7 +508,7 @@
 		"atHigherLevel": "<p>If you cast this spell using a spell slot of 4th level or higher, the duration is concentration, up to 10 minutes. If you use a spell slot of 5th level or higher, the duration is 8 hours. If you use a spell slot of 7th level or higher, the duration is 24 hours. If you use a 9th level spell slot, the spell lasts until it is dispelled. Using a spell slot of 5th level or higher grants a duration that doesn't require concentration.</p>"
 	},
 	{
-		"name": "Black Tentacles",
+		"name": "Evard's Black Tentacles",
 		"classes": [
 			"wizard"
 		],
@@ -2122,7 +2122,7 @@
 		}
 	},
 	{
-		"name": "Faithful Hound",
+		"name": "Mordenkainen's Faithful Hound",
 		"classes": [
 			"wizard"
 		],
@@ -2487,7 +2487,7 @@
 		"description": "<p>You attempt to turn one creature that you can see within range into stone. If the target&#39;s body is made of flesh, the creature must make a Constitution saving throw. On a failed save, it is restrained as its flesh begins to harden. On a successful save, the creature isn&#39;t affected.</p><p>A creature restrained by this spell must make another Consititution saving throw at the end of each of its turns. If it successfully saves against this spell three times, the spell ends. If it fails saves three times, it is turned to stone and subjected to the petrified condition for the duration. The successes and failures don&#39;t need to be consecutive; keep track of both until the target collects three of a kind.</p><p>If the creature is physically broken while petrified, it suffers from similar deformities if it reverts to its original state.</p><p>If you maintain your concentration on this spell for the entire possible duration, the creature is turned to stone until the effect is removed.</p>"
 	},
 	{
-		"name": "Floating Disk",
+		"name": "Tenser's Floating Disk",
 		"classes": [
 			"wizard"
 		],
@@ -2635,7 +2635,7 @@
 		"description": "<p>You touch a willing creature. For the duration, the target&#39;s movement is unaffected by difficult terrain, and spells and other magical effects can neither reduce the target&#39;s speed nor cause the target to be paralyzed or restrained.</p><p>The target can also spend 5 feet of movement to automatically escape from nonmagical restraints, such as manacles or a creature that has it grappled. Finally, being underwater imposes no penalties on the target&#39;s movement or attacks.</p>"
 	},
 	{
-		"name": "Freezing Sphere",
+		"name": "Otiluke's Freezing Sphere",
 		"classes": [
 			"wizard"
 		],
@@ -3191,7 +3191,7 @@
 		"description": "<p>A willing creature you touch is imbued with bravery. Until the spell ends, the creature is immune to being frightened and gains temporary hit points equal to your spellcasting ability modifier at the start of each of its turns. When the spell ends, the target loses any remaining temporary hit points from this spell.</p>"
 	},
 	{
-		"name": "Hideous Laughter",
+		"name": "Tasha's Hideous Laughter",
 		"classes": [
 			"bard",
 			"wizard"
@@ -3469,7 +3469,7 @@
 		}
 	},
 	{
-		"name": "Instant Summons",
+		"name": "Drawmij's Instant Summons",
 		"classes": [
 			"wizard"
 		],
@@ -3509,7 +3509,7 @@
 		"atHigherLevel": "<p>When you cast this spell using a spell slot of 3rd level or higher, you can target one additional creature for each slot level above 2nd.</p>"
 	},
 	{
-		"name": "Irresistible Dance",
+		"name": "Otiluke's Irresistible Dance",
 		"classes": [
 			"bard",
 			"wizard"
@@ -3900,7 +3900,7 @@
 		"atHigherLevel": "<p>When you cast this spell using a spell slot of 4th level or higher, the bonus increases to +2. When you use a spell slot of 6th level or higher, the bonus increases to +3.</p>"
 	},
 	{
-		"name": "Magnificent Mansion",
+		"name": "Mordenkainen's Magnificent Mansion",
 		"classes": [
 			"bard",
 			"wizard"
@@ -4651,7 +4651,7 @@
 		"description": "<p>A shimmering, multicolored plane of light forms a vertical opaque wall - up to 90 feet long, 30 feet high, and 1 inch thick - centered on a point you can see within range. Alternatively, you can shape the wall into a sphere up to 30 feet in diameter centered on a point you choose within range. The wall remains in place for the duration. If you position the wall so that it passes through a space occupied by a creature, the spell fails, and your action and the spell slot are wasted.</p><p>The wall sheds bright light out to a range of 100 feet and dim light for an additional 100 feet. You and creatures you designate at the time you cast the spell can pass through and remain near the wall without harm. If another creature that can see the wall moves to within 20 feet of it or starts its turn there, the creature must succeed on a Constitution saving throw or become blinded for 1 minute.</p><p>The wall consists of seven layers, each with a different color. When a creature attempts to reach into or pass through the wall, it does so one layer at a time through all the wall's layers. As it passes or reaches through each layer, the creature must make a Dexterity saving throw or be affected by that layer's properties as described below.</p><p>The wall can be destroyed, also one layer at a time, in order from red to violet, by means specific to each layer. Once a layer is destroyed, it remains so for the duration of the spell. A <i>rod of cancellation</i> destroys a <i>prismatic wall</i>, but an <i>antimagic field</i> has no effect on it.</p><p><b>1. Red.</b> The creature takes 10d6 fire damage on a failed save, or half as much damage on a successful one. While this layer is in place, nonmagical ranged attacks can't pass through the wall. The layer can be destroyed by dealing at least 25 cold damage to it.</p><p><b>2. Orange.</b> The creature takes 10d6 acid damage on a failed save, or half as much damage on a successful one. While this layer is in place, magical ranged attacks can't pass through the wall. The layer is destroyed by a strong wind.</p><p><b>3. Yellow.</b> The creature takes 10d6 lightning damage on a failed save, or half as much damage on a successful one. This layer can be destroyed by dealing at least 60 force damage to it.</p><p><b>4. Green.</b> The creature takes 10d6 poison damage on a failed save, or half as much damage on a successful one. A passwall spell, or another spell of equal or greater level that can open a portal on a solid surface, destroys this layer.</p><p><b>5. Blue.</b> The creature takes 10d6 cold damage on a failed save, or half as much damage on a successful one. This layer can be destroyed by dealing at least 25 fire damage to it.</p><p><b>6. Indigo.</b> On a failed save, the creature is restrained. It must then make a Constitution saving throw at the end of each of its turns. If it successfully saves three times, the spell ends. If it fails its save three times, it permanently turns to stone and is subjected to the petrified condition. The successes and failures don't need to be consecutive; keep track of both until the creature collects three of a kind. While this layer is in place, spells can't be cast through the wall. The layer is destroyed by bright light shed by a daylight spell or a similar spell of equal or higher level.</p><p><b>7. Violet.</b> On a failed save, the creature is blinded. It must then make a Wisdom saving throw at the start of your next turn. A successful save ends the blindness. If it fails that save, the creature is transported to another plane of the GM's choosing and is no longer blinded. (Typically, a creature that is on a plane that isn't its home plane is banished home, while other creatures are usually cast into the Astral or Ethereal planes.) This layer is destroyed by a <i>dispel magic</i> spell or a similar spell of equal or higher level that can end spells and magical effects.</p>"
 	},
 	{
-		"name": "Private Sanctum",
+		"name": "Mordenkainen's Private Sanctum",
 		"classes": [
 			"wizard"
 		],
@@ -4936,7 +4936,7 @@
 		"description": "<p>At your touch, all curses affecting one creature or object end. If the object is a cursed magical item, its curse remains, but the spell breaks its owner&#39;s attunement to the object so it can be removed or discarded.</p>"
 	},
 	{
-		"name": "Resilient Sphere",
+		"name": "Otiluke's Resilient Sphere",
 		"classes": [
 			"wizard"
 		],
@@ -5130,7 +5130,7 @@
 		"description": "<p>You can see and hear a particular creature you choose that is on the same plane of existence as you. The target must make a Wisdom saving throw, which is modified by how well you know the target and the sort of physical connection you have to it. If a target knows you&#39;re casting this spell, it can fail the saving throw voluntarily if it wants to be observed.</p><table><thead><tr><th>Knowledge</th><th>Save Modifier</th></tr></thead><tbody><tr><td>Secondhand (you have heard of the target)</td><td>+5</td></tr><tr><td>Firsthand (you have met the target)</td><td>0</td></tr><tr><td>Familiar (you know the target well)</td><td>-5</td></tr><tr><td>Connection</td><td>Save Modifier</td></tr><tr><td>Likeness or picture</td><td>-2</td></tr><tr><td>Possession or garment</td><td>-4</td></tr><tr><td>Body part, lock of hair, bit of nail, or the like</td><td>-10</td></tr></tbody></table><p>On a successful save, the target isn&#39;t affected, and you can&#39;t use this spell against it again for 24 hours. On a failed save, the spell creates an invisible sensor within 10 feet of the target. You can see and hear through the sensor as if you were there. The sensor moves with the target, remaining within 10 feet of it for the duration. A creature that can see invisible objects sees the sensor as a luminous orb about the size of your fist.</p><p>Instead of targeting a creature, you can choose a location you have seen before as the target of this spell. When you do, the sensor appears at that location and doesn't move.</p>"
 	},
 	{
-		"name": "Secret Chest",
+		"name": "Leomund's Secret Chest",
 		"classes": [
 			"wizard"
 		],
@@ -5820,7 +5820,7 @@
 		"description": "<p>You gain the ability to move or manipulate creatures or objects by thought. When you cast the spell, and as your action each round for the duration, you can exert your will on one creature or object that you can see within range, causing the appropriate effect below. You can affect the same target round after round, or choose a new one at any time. If you switch targets, the prior target is no longer affected by the spell.</p><p>On subsequent rounds, you can use your action to attempt to maintain your telekinetic grip on the creature by repeating the contest.</p><p>If the object is worn or carried by a creature, you must make an ability check with your spellcasting ability contested by that creature's Strength check. If you succeed, you pull the object away from that creature and can move it up to 30 feet in any direction but not beyond the range of this spell.</p><p>You can exert fine control on objects with your telekinetic grip, such as manipulating a simple tool, opening a door or a container, stowing or retrieving an item from an open container, or pouring the contents from a vial.</p>"
 	},
 	{
-		"name": "Telepathic Bond",
+		"name": "Rary's Telepathic Bond",
 		"classes": [
 			"wizard"
 		],
@@ -5941,7 +5941,7 @@
 		"description": "<p>You briefly stop the flow of time for everyone but yourself. No time passes for other creatures, while you take 1d4 + 1 turns in a row, during which you can use actions and move as normal.</p><p>This spell ends if one of the actions you use during this period, or any effects that you create during this period, affects a creature other than you or an object being worn or carried by someone other than you. In addition, the spell ends if you move to a place more than 1,000 feet form the location where you cast it.</p>"
 	},
 	{
-		"name": "Tiny Hut",
+		"name": "Leomund's Tiny Hut",
 		"classes": [
 			"bard",
 			"wizard"
