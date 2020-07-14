@@ -386,7 +386,6 @@ function runCode(path){
         }
     }
     else{
-        console.log(currentStep);
         evalIt();
     }
 }
@@ -80951,6 +80950,7 @@ module.exports = function(self){
     }
 
     function loadImg(link, id){
+        updateUser(true,'Loading image.');
         return new Promise(function(cb, rj){
             callbacks[id] = cb;
             self.postMessage({type: "loadImg", link, id});

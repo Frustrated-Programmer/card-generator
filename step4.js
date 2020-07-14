@@ -21,6 +21,7 @@ let started = false;
 
 function loadImg(link){
     return new Promise(function(cb, rj){
+        updateUser(true,'Loading image.');
         let imageObj = new Image();
         imageObj.onload = function(){
             let canvas = document.createElement("canvas");
