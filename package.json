@@ -5,6 +5,7 @@
 		"email": "contact@frustratedprogrammer.com",
 		"url": "https://frustratedprogrammer.com"
 	},
+	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/Frustrated-Programmer/card-generator",
 	"readme": "",
 	"version": "1.0.0",
