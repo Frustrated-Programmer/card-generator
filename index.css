@@ -145,6 +145,7 @@ input[type=number] {
 }
 
 .step {
+	z-index: 2;
 	background-color: #777777;
 	display: none;
 }

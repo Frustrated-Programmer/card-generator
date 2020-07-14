@@ -31,32 +31,32 @@
 </head>
 <body id="actual_body">
 <div id="header">
-	<button class="header_step_button" id="header_step_1">
+	<button class="header_step_button" id="header_step_1" disabled>
 		<span class="header_step_title">Step 1</span>
 		<br>
 		<span class="header_step_description">Choose spell book.</span>
 	</button>
-	<button class="header_step_button" id="header_step_2">
+	<button class="header_step_button" id="header_step_2" disabled>
 		<span class="header_step_title">Step 2</span>
 		<br>
 		<span class="header_step_description">Verify spells.</span>
 	</button>
-	<button class="header_step_button" id="header_step_3">
+	<button class="header_step_button" id="header_step_3" disabled>
 		<span class="header_step_title">Step 3</span>
 		<br>
 		<span class="header_step_description">Choose card style.</span>
 	</button>
-	<button class="header_step_button" id="header_step_35" style="display: none">
+	<button class="header_step_button" id="header_step_35" style="display: none" disabled>
 		<span class="header_step_title">3.5</span>
 		<br>
 		<span class="header_step_description">Custom Card Editing.</span>
 	</button>
-	<button class="header_step_button" id="header_step_4">
+	<button class="header_step_button" id="header_step_4" disabled>
 		<span class="header_step_title">Step 4</span>
 		<br>
 		<span class="header_step_description">Generating cards.</span>
 	</button>
-	<button class="header_step_button" id="header_step_5">
+	<button class="header_step_button" id="header_step_5" disabled>
 		<span class="header_step_title">Step 5</span>
 		<br>
 		<span class="header_step_description">Download cards.</span>
@@ -69,8 +69,11 @@
 		<p id="error_msg"></p>
 		<button id="close_error" style="transform: translate(-50%,-50%); float: right;">Close</button>
 	</div>
-	<div id="step0" class="step" style="display: block; position: absolute; top: 50%; left: 50%; transform: translate(-50%); z-index: -1;">
-		<p>Your JavaScript is disabled or blocked. This site relies heavily of JavaScript, so if you wish to use this site:<br>Please allow Javascript and reload the page.</p>
+	<div id="step0" class="step" style="display: block; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 1;">
+		<h1 style="text-align: center; font-family: ringbearer; font-size: 400%">Loading. . .</h1>
+		<img src="images/Loading.svg" style="display: block; margin-left: auto; margin-right: auto;">
+		<noscript>Your JavaScript is disabled or blocked. This site relies heavily of JavaScript, so if you wish to use this site:</noscript><br>
+		<noscript>Please allow Javascript and reload the page.</noscript>
 	</div>
 	<div id="step1" class="step" style="display: none;">
 		<h1 id="step1_title">Choose Your Spell Book!</h1>

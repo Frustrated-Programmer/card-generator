@@ -271,7 +271,7 @@ function updateStep(){
             headerBttns[i].disabled = true;
             headerBttns[i].className = "header_step_button_selected header_step_button";
             stepsElem[i].style.display = "block";
-            stepsElem[i].style.zIndex = 1;
+            stepsElem[i].style.zIndex = 2;
             if(steps[currentStep] === 3){
                 stepsElem[i].style.opacity = 1;
                 stepsElem[i].style.position = "unset";
@@ -492,7 +492,7 @@ let addCardData = {
     "atHigherLevel": ""
 
 };
-
+document.getElementById("step0").style.display = "none";
 updateStep();
 document.getElementById("popup4Save").onclick = function(){popup4FuncSave();};
 document.getElementById("popup4Cancel").onclick = function(){popup4FuncCancel();};
