@@ -188,7 +188,7 @@ let back_select = document.getElementById("back_card_select");
 
 function getCustomSpell(spell){
     let tempSpell = {
-        name: spell.name.toLowerCase() || "",
+        name: spell.name || "",
         school: spell.school.toLowerCase() || "",
         classes: {},
         level: spell.level || 0,
