@@ -18,7 +18,7 @@
 cancelStep4 = false;
 let loaded = [false, !step3Choices.back, step3Choices.frontChoice !== "nbeebz"];
 let started = false;
-let audio = new Audio("./Success.mp3");
+
 function loadImg(link){
     return new Promise(function(cb, rj){
         let imageObj = new Image();
@@ -150,19 +150,19 @@ class PDFGen{
             height: this.image.height - (cardBorder.thickness * 4)
         };
         scale = {
-            x: ((overidePageData.width || cardSize.width) / cardSize.width),
-            y: ((overidePageData.height || cardSize.height) / cardSize.height)
+            x: ((overridePageData.width || cardSize.width) / cardSize.width),
+            y: ((overridePageData.height || cardSize.height) / cardSize.height)
         };
-        if(overidePageData.width === 0 && overidePageData.horizontally !== 0){
-            let minWidth = (pageSize.width / overidePageData.horizontally) - (cardBorder.thickness * 4);
+        if(overridePageData.width === 0 && overridePageData.horizontally !== 0){
+            let minWidth = (pageSize.width / overridePageData.horizontally) - (cardBorder.thickness * 4);
             scale.x = 1 / (cardSize.width / (minWidth - (minWidth / 20)));
         }
-        if(overidePageData.height === 0 && overidePageData.vertically !== 0){
-            let minHeight = (pageSize.height / overidePageData.vertically) - (cardBorder.thickness * 4);
+        if(overridePageData.height === 0 && overridePageData.vertically !== 0){
+            let minHeight = (pageSize.height / overridePageData.vertically) - (cardBorder.thickness * 4);
             scale.y = 1 / (cardSize.height / (minHeight - (minHeight / 20)));
         }
-        let cardsHorizontally = overidePageData.horizontally || (Math.floor(pageSize.width / (cardSize.width * scale.x)));
-        let cardsVertically = overidePageData.vertically || (Math.floor(pageSize.height / (cardSize.height * scale.y)));
+        let cardsHorizontally = overridePageData.horizontally || (Math.floor(pageSize.width / (cardSize.width * scale.x)));
+        let cardsVertically = overridePageData.vertically || (Math.floor(pageSize.height / (cardSize.height * scale.y)));
         if(cardsHorizontally === 0 || cardsVertically === 0){
             if(cardsVertically === 0 && cardsHorizontally === 0){
                 let distance = {
@@ -384,12 +384,12 @@ class PDFGen{
     async addCard(options, spell, front, image){
         if(front) pageData.cardCount.calculated.front++;
         else pageData.cardCount.calculated.back++;
-        let margin = {x:0,y:0};
+        let margin = {x: 0, y: 0};
         if(options === true){//AUTO make card.
             margin = {
                 x: ((pageData.margin.perCard.x / 2) + (pageData.margin.perCard.x * ((pageData.cardsOnThisPage) % pageData.cardCount.horizontally))),
                 y: ((pageData.margin.perCard.y / 2) + (pageData.margin.perCard.y * (Math.floor(pageData.cardsOnThisPage / pageData.cardCount.horizontally))))
-            }
+            };
             options = {
                 x: (pageData.cardEditingPos.x * pageData.cardSize.width),
                 y: (pageData.cardEditingPos.y * pageData.cardSize.height),
@@ -400,8 +400,8 @@ class PDFGen{
             //Make the options.(x/y) act like they aren't scaled.
             options.x -= (cardBorder.thickness);
             options.y -= (cardBorder.thickness);
-            options.x / scale.x;
-            options.y / scale.y;
+            options.x /= scale.x;
+            options.y /= scale.y;
 
         }
         if(spell) spell = getCustomSpell(spell);
@@ -479,10 +479,10 @@ class PDFGen{
                         detail.push({
                             text: replacedText,
                             "settings": {
-                                x:( (options.x + this.template[i].x) * scale.x) + margin.x,
+                                x: ((options.x + this.template[i].x) * scale.x) + margin.x,
                                 y: ((options.y + this.template[i].y) * scale.y) + margin.y,
                                 "textX": (x * scale.x) + margin.x,
-                                "textY":(y * scale.y) + margin.y,
+                                "textY": (y * scale.y) + margin.y,
                                 "font": this.template[i].fontStyle,
                                 fontSize: size * ((scale.x + scale.y) / 2),
                                 "align": this.template[i].textAlign,
@@ -554,7 +554,6 @@ class PDFGen{
 
     async finish(){
         return new Promise((cb) => {
-            updateUser(false, "");
             let keys = Object.keys(fonts);
             let blober = new blob();
             updateUser(false, "Physically adding cards to a PDF");
@@ -652,7 +651,6 @@ async function startCode(){
     pdfgen.finish().then(function(blob){
         if(cancelStep4) return;
         document.getElementById("step5_frame").src = blob.toBlobURL("application/pdf");
-        audio.play();
         currentStep++;
         updateStep();
     });

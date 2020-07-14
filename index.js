@@ -19,12 +19,11 @@ const classes = ["bard", "cleric", "wizard", "druid", "sorcerer", "warlock", "ra
 const schools = ["abjuration", "conjuration", "divination", "enchantment", "evocation", "illusion", "necromancy", "transmutation"];
 const steps = [1, 2, 3, 35, 4, 5];
 const spellsJSON = require("./spells.json");
-let customSpells = [];
-const Report = require("fluentreports").Report;
 const fontkit = require("fontkit");
-const blob = require("fluentreports/lib/third-party/blob-stream");
-const streamBuffers = require("stream-buffers");
+const worker = require('webworkify');
 require("buffer");
+
+let customSpells = [];
 let cards = {
     columns: 4,
     rows: 2,
@@ -154,7 +153,7 @@ let nbeebz = [
     {x: 135.68333333333328, y: 124.55000000000001, width: 77.5, height: 24.5, fontStyle: "mplantin", fontSize: 0, textAlign: "Left", text: "{casting}"},
     {x: 35.43333333333328, y: 354.8, width: 168, height: 50, fontStyle: "mplantin", fontSize: 0, textAlign: "Left", text: "{athigherlevel}"}
 ];
-let overidePageData = {
+let overridePageData = {
     width: 0,
     height: 0,
     horizontally: 0,
@@ -291,24 +290,100 @@ function updateStep(){
     title.innerText = "Step " + steps[currentStep];
     if(steps[currentStep] !== 5) runCode("./step" + steps[currentStep] + ".js");
     else if(steps[currentStep] === 5){
+        SuccessSFX.play();
         displayPopup(6);
         updatePopup6();
     }
 }
-
+const SuccessSFX = new Audio("./Success.mp3");
+let step4Worker;
+let step4_updates = document.getElementById("step4_updates");
+let step4_detailed = document.getElementById("step4_detailed");
 function runCode(path){
     function evalIt(){
         fetch(path).then(response => response.text()).then(function(code){
             eval(code);
         });
     }
+    if(step4Worker !== undefined){
+        step4Worker.terminate();
+        step4Worker = undefined;
+    }
     console.log(`Running: `, path);
     if(currentStep === 4){
-        console.error("Currently trying to come up with a way to make this smoother. Sorry for the lag");
-        evalIt();
+        if(typeof (Worker) !== "undefined"){
+            if(step4Worker === undefined){
+                step4Worker = new worker(require("./step4WebWorker.js"));
+                step4Worker.postMessage({
+                    type:"start",
+                    step3Choices,
+                    cardBorder,
+                    overridePageData,
+                    fonts,
+                    step3FrontSrc: document.getElementById('step3_preview_front').src,
+                    step3BackSrc: document.getElementById('step3_preview_back').src,
+                    template,
+                    spells,
+                });
+                step4Worker.onmessage = function(event){
+                    if(event.data.type === "evalMe") eval(event.data.function);
+                    else if(event.data.type === "userUpdate"){
+                        if(event.data.detailed){
+                            step4_detailed.style.display = "block";
+                            if(typeof event.data.display === "string") step4_detailed.innerText = event.data.display;
+
+                        }
+                        else{
+                            step4_updates.style.display = "block";
+                            step4_updates.innerText = event.data.display;
+                            if(!event.data.display) step4_updates.style.display = "none";
+                        }
+                    }
+                    else if(event.data.type === "loadImg"){
+                        let imageObj = new Image();
+                        imageObj.onload = function(){
+                            let canvas = document.createElement("canvas");
+                            canvas.width = imageObj.width;
+                            canvas.height = imageObj.height;
+                            canvas.style.display = "none";
+                            document.body.appendChild(canvas);
+                            canvas.getContext("2d").drawImage(imageObj, 0, 0, imageObj.width, imageObj.height);
+                            let url = canvas.toDataURL().toString();
+                            canvas.remove();
+                            step4Worker.postMessage({
+                                type:"callback",
+                                url: url,
+                                width: imageObj.width,
+                                height: imageObj.height,
+                                id:event.data.id
+                            });
+                        };
+                        imageObj.src = event.data.link;
+                    }
+                    else if(event.data.type === "linkCheck"){
+                        let http = new XMLHttpRequest();
+                        http.open("HEAD", event.data.url, false);
+                        http.send();
+                        step4Worker.postMessage({type:"callback",id:event.data.id,output:http.status != 404});
+                    }
+                    else if(event.data.type === "done"){
+                        document.getElementById("step5_frame").src = event.data.url;
+                        step4Worker.terminate();
+                        step4Worker = undefined;
+                        currentStep++;
+                        updateStep();
+                    }
+                    else console.log(`Unknown type: ${event.data.type}`);
+                }
+            }
+        }
+        else{
+//          console.error("Currently trying to come up with a way to make this smoother. Sorry for the lag");
+            console.error('WebWorkers Aren\'t supported. Running it the un-optimized way.')
+            evalIt();
+        }
     }
     else{
-        console.log(currentStep);
         evalIt();
     }
 }
@@ -720,9 +795,9 @@ function updatePopup5(){
 
     function setupSettings(name){
         let elem = document.getElementById("settings" + name);
-        elem.value = overidePageData[name];
+        elem.value = overridePageData[name];
         elem.onchange = function(){
-            overidePageData[name] = parseInt(this.value, 10) || 0;
+            overridePageData[name] = parseInt(this.value, 10) || 0;
         };
     }
 

@@ -7,13 +7,17 @@
 	},
 	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/Frustrated-Programmer/card-generator",
-	"readme": "",
+	"readme": "./readme.md",
+	"description": "A generator that makes a printable PDF of spell cards.",
 	"version": "1.0.0",
 	"dependencies": {
-		"stream-buffers": "latest",
+		"blob-stream": "^0.1.3",
 		"buffer": "latest",
+		"core-js": "^3.6.5",
 		"fluentreports": "latest",
-		"fontkit": "latest"
+		"fontkit": "^1.8.1",
+		"stream-buffers": "latest",
+		"webworkify": "^1.5.0"
 	},
 	"devDependencies": {
 		"browserify": "latest"
