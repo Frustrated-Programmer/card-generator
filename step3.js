@@ -44,9 +44,6 @@ front_select.disabled = false;
 back_select.disabled = false;
 //FRONT
 let step3_front_hiddenInput = document.getElementById('step3_front_hiddenInput');
-let select_front_for_colors = document.getElementById('select_front_for_colors');
-let select_front_for_class = document.getElementById('select_front_for_class');
-let step3_preview_front = document.getElementById('step3_preview_front');
 let step_3_front_custom = document.getElementById('step_3_front_custom');
 step3_front_hiddenInput.onchange = function(){
     let file = this.files[0];
@@ -68,19 +65,19 @@ front_select.onchange = function(ev){
     step3_preview_front.style.display = "block";
     switch(this.value){
         case 'nbeebz':
-            step3_preview_front.src = "images/nBeebz/example_"+schools[Math.round(Math.random() * (schools.length-1))]+".png";
+            step3_preview_front.src = "./images/website/preview/example_"+schools[Math.round(Math.random() * (schools.length-1))]+".png";
             break;
-        case 'Colored template cards':
+        case 'color':
             select_front_for_colors.style.display = "block";
-            if(select_front_for_colors.value === "none") step3_preview_front.src = "images/front_"+colors[Math.round(Math.random() * (colors.length-1))]+".png";
-            else step3_preview_front.src = "images/front_"+select_front_for_colors.value.toLowerCase()+".png";
+            if(select_front_for_colors.value === "none") step3_preview_front.src = "./images/website/preview/front_"+colors[Math.round(Math.random() * (colors.length-1))]+".png";
+            else step3_preview_front.src = "./images/website/preview/front_"+select_front_for_colors.value.toLowerCase()+".png";
             break;
-        case 'Classed template cards':
+        case 'class':
             select_front_for_class.style.display = "block";
-            if(select_front_for_class.value === "none") step3_preview_front.src = "images/"+classes[Math.round(Math.random() * (classes.length-1))]+"_front.png";
-            else step3_preview_front.src = "images/"+select_front_for_class.value.toLowerCase()+"_front.png";
+            if(select_front_for_class.value === "none") step3_preview_front.src = "./images/website/preview/"+classes[Math.round(Math.random() * (classes.length-1))]+"_front.png";
+            else step3_preview_front.src = "./images/website/preview/"+select_front_for_class.value.toLowerCase()+"_front.png";
             break;
-        case 'Upload custom template':
+        case 'upload':
             ev.preventDefault();
             this.selectedIndex = this.before || 0;
             step3_preview_front.style.display = "none";
@@ -94,19 +91,17 @@ front_select.onchange = function(ev){
     checkIfCanApprove();
 };
 select_front_for_colors.onchange = function(){
-    if(this.value !== "none") step3_preview_front.src = "images/front_"+this.value.toLowerCase()+".png";
+    if(this.value !== "none") step3_preview_front.src = "./images/website/preview/front_"+this.value.toLowerCase()+".png";
     checkIfCanApprove();
 };
 select_front_for_class.onchange = function(){
-    if(this.value !== "none") step3_preview_front.src = "images/"+this.value.toLowerCase()+"_front.png";
+    if(this.value !== "none") step3_preview_front.src = "./images/website/preview/"+this.value.toLowerCase()+"_front.png";
     checkIfCanApprove();
 };
 
 //BACK
 let step3_back_hiddenInput = document.getElementById('step3_back_hiddenInput');
-let step3_preview_back = document.getElementById('step3_preview_back');
 let step_3_back_custom = document.getElementById('step_3_back_custom');
-let select_back_for_class = document.getElementById('select_back_for_class');
 step3_back_hiddenInput.onchange = function(){
     let file = this.files[0];
     let success = updateFile(step3_preview_back,file);
@@ -124,24 +119,24 @@ back_select.onchange = function(ev){
     select_back_for_class.style.display = "none";
     step3_preview_back.style.display = "block";
     switch(this.value){
-        case 'Class backgrounds':
+        case 'class':
             select_back_for_class.style.display = "block";
-            if(select_back_for_class.value.toLowerCase() !== "none") step3_preview_back.src = "images/"+select_back_for_class.value.toLowerCase()+"_back.png";
-            else step3_preview_back.src = "images/"+classes[Math.round(Math.random() * (classes.length-1))]+"_back.png";
+            if(select_back_for_class.value.toLowerCase() !== "none") step3_preview_back.src = "./images/website/preview/"+select_back_for_class.value.toLowerCase()+"_back.png";
+            else step3_preview_back.src = "./images/website/preview/"+classes[Math.round(Math.random() * (classes.length-1))]+"_back.png";
             break;
-        case 'Simple background':
-            step3_preview_back.src = "images/Back_Simple.png";
+        case 'simple':
+            step3_preview_back.src = "./images/website/preview/Back_Simple.png";
             break;
-        case 'Complex background':
-            step3_preview_back.src = "images/Back_Complex.png";
+        case 'complex':
+            step3_preview_back.src = "./images/website/preview/Back_Complex.png";
             break;
-        case 'Upload background':
+        case 'upload':
             ev.preventDefault();
             this.selectedIndex = this.before || 0;
             if(this.selectedIndex === 2) select_back_for_class.style.display = "block";
             step3_back_hiddenInput.click();
             break;
-        case 'None':
+        case 'nothing':
             step3_preview_back.style.display = "none";
             step3_preview_back.src = "//:0";
             break;
@@ -152,7 +147,7 @@ back_select.onchange = function(ev){
     checkIfCanApprove();
 };
 select_back_for_class.onchange = function(){
-    if(this.value.toLowerCase() !== "none") step3_preview_back.src = "images/"+this.value.toLowerCase()+"_back.png";
+    if(this.value.toLowerCase() !== "none") step3_preview_back.src = "./images/website/preview/"+this.value.toLowerCase()+"_back.png";
     checkIfCanApprove();
 };
 

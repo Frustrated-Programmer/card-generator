@@ -32,6 +32,8 @@
 	font-size: 140%;
 	font-family: mplantin;
 	color: #4C4C4C;
+	position: absolute;
+	top: 80%;
 }
 
 #step4_generating {

@@ -169,7 +169,7 @@ function createStep2Elem(spell, index){
     //TODO: figure out how to auto adjust text size.
     let deleteBttn = document.createElement("button");
     let img = document.createElement("img");
-    img.src = "./images/TrashCan.png";
+    img.src = "./images/website/TrashCan.png";
     deleteBttn.appendChild(img);
     deleteBttn.onclick = function(){
         for(let i = 0; i < spells.length; i++){

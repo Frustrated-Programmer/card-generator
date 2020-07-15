@@ -12,11 +12,8 @@
 	"version": "1.0.0",
 	"dependencies": {
 		"blob-stream": "^0.1.3",
-		"buffer": "latest",
-		"core-js": "^3.6.5",
 		"fluentreports": "latest",
 		"fontkit": "^1.8.1",
-		"stream-buffers": "latest",
 		"webworkify": "^1.5.0"
 	},
 	"devDependencies": {

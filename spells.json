@@ -3509,7 +3509,7 @@
 		"atHigherLevel": "<p>When you cast this spell using a spell slot of 3rd level or higher, you can target one additional creature for each slot level above 2nd.</p>"
 	},
 	{
-		"name": "Otiluke's Irresistible Dance",
+		"name": "Otto's Irresistible Dance",
 		"classes": [
 			"bard",
 			"wizard"

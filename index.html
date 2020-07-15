@@ -71,7 +71,7 @@
 	</div>
 	<div id="step0" class="step" style="display: block; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 1;">
 		<h1 style="text-align: center; font-family: ringbearer; font-size: 400%">Loading. . .</h1>
-		<img src="images/Loading.svg" style="display: block; margin-left: auto; margin-right: auto;">
+		<img src="./images/website/Loading.svg" style="display: block; margin-left: auto; margin-right: auto;">
 		<noscript>Your JavaScript is disabled or blocked. This site relies heavily of JavaScript, so if you wish to use this site:</noscript><br>
 		<noscript>Please allow Javascript and reload the page.</noscript>
 	</div>
@@ -79,33 +79,33 @@
 		<h1 id="step1_title">Choose Your Spell Book!</h1>
 		<div style="display:flex;" class="class_selection">
 			<button id="bard_selection">
-				<img alt="Img of a ornate card with the BARD logo." src="./images/bard_back.png">
+				<img alt="Img of a ornate card with the BARD logo." src="./images/website/preview/bard_back.png">
 			</button>
 			<button id="cleric_selection">
-				<img alt="Img of a ornate card with the CLERIC logo." src="./images/cleric_back.png">
+				<img alt="Img of a ornate card with the CLERIC logo." src="./images/website/preview/cleric_back.png">
 			</button>
 			<button id="wizard_selection">
-				<img alt="Img of a ornate card with the WIZARD logo." src="./images/wizard_back.png">
+				<img alt="Img of a ornate card with the WIZARD logo." src="./images/website/preview/wizard_back.png">
 			</button>
 			<button id="druid_selection">
-				<img alt="Img of a ornate card with the DRUID logo." src="./images/druid_back.png">
+				<img alt="Img of a ornate card with the DRUID logo." src="./images/website/preview/druid_back.png">
 			</button>
 		</div>
 		<div style="display:flex;" class="class_selection">
 			<button id="sorcerer_selection">
-				<img alt="Img of a ornate card with the SORCERER logo." src="./images/sorcerer_back.png">
+				<img alt="Img of a ornate card with the SORCERER logo." src="./images/website/preview/sorcerer_back.png">
 			</button>
 			<button id="warlock_selection">
-				<img alt="Img of a ornate card with the WARLOCK logo." src="./images/warlock_back.png">
+				<img alt="Img of a ornate card with the WARLOCK logo." src="./images/website/preview/warlock_back.png">
 			</button>
 			<button id="ranger_selection">
-				<img alt="Img of a ornate card with the RANGER logo." src="./images/ranger_back.png">
+				<img alt="Img of a ornate card with the RANGER logo." src="./images/website/preview/ranger_back.png">
 			</button>
 			<button id="paladin_selection">
-				<img alt="Img of a ornate card with the PALADIN logo." src="./images/paladin_back.png">
+				<img alt="Img of a ornate card with the PALADIN logo." src="./images/website/preview/paladin_back.png">
 			</button>
 			<button id="custom_selection">
-				<img alt="Img of a ornate card with a gear to symbolize CUSTOM." src="./images/custom_back.png">
+				<img alt="Img of a ornate card with a gear to symbolize CUSTOM." src="./images/website/preview/custom_back.png">
 			</button>
 		</div>
 	</div>
@@ -119,14 +119,15 @@
 	<div id="step3" class="step" style="left:1000px; top:-1000px;">
 		<div>
 			<h1 id="step3_title">Note: backside of cards will be resized to match the size of the frontside</h1>
+			<p style="text-align: center;width: 100%;font-family: mplantin;">Also Note: Images shown here are in low quality for quick loading. While the actual images used are in high quality.</p>
 			<div id="step3_frontside" class="step3_img_choice_container">
 				<select id="front_card_select">
 					<option value="none" hidden selected disabled>Select Frontside</option>
 					<option value="custom" disabled hidden id="step_3_front_custom"></option>
 					<option value="nbeebz">nBeebz's spell cards</option>
-					<option>Colored template cards</option>
-					<option>Classed template cards</option>
-					<option class="step3_upload" id="front_select_upload">
+					<option value="color">Colored template cards</option>
+					<option value="class">Classed template cards</option>
+					<option value='upload' class="step3_upload" id="front_select_upload">
 						<button>Upload custom template</button>
 					</option>
 				</select>
@@ -163,11 +164,11 @@
 				<select id="back_card_select">
 					<option value="none" hidden selected disabled>Select Backside</option>
 					<option value="custom" id="step_3_back_custom" hidden disabled></option>
-					<option>None</option>
-					<option>Class backgrounds</option>
-					<option>Simple background</option>
-					<option>Complex background</option>
-					<option class="step3_upload">Upload background</option>
+					<option value="nothing">None</option>
+					<option value="class">Class backgrounds</option>
+					<option value="simple">Simple background</option>
+					<option value="complex">Complex background</option>
+					<option value="upload" class="step3_upload">Upload background</option>
 				</select>
 				<input type="file" id="step3_back_hiddenInput" accept="image/*" style="display:none">
 				<select style="display: none" id="select_back_for_class">
@@ -189,7 +190,7 @@
 		</div>
 		<div id="step3ArrowGroup">
 			<p>Extra Settings</p>
-			<img src="./images/arrow.png" id="step3Arrow">
+			<img src="./images/website/arrow.png" id="step3Arrow">
 		</div>
 	</div>
 	<div id="step35" class="step">
@@ -261,21 +262,21 @@
 			<button id="step35_AddInput">Add Input</button>
 			<div id="step35_simpleSettings" style="display: none;">
 				<button id="step35_edittext">Edit Text</button>
-				<button id="step35_delete">Delete <img alt="Image of a trashcan." src="images/TrashCan.png"></button>
+				<button id="step35_delete">Delete <img alt="Image of a trashcan." src="./images/website/TrashCan.png"></button>
 				<button id="step35_more">More...</button>
 			</div>
 		</div>
 	</div>
 	<div id="step4" class="step">
 		<h1 id="step4_generating">Generating. . .</h1>
-		<img src="images/Loading.svg" style="display: block; margin-left: auto; margin-right: auto;">
+		<img src="./images/website/Loading.svg" style="display: block; margin-left: auto; margin-right: auto;">
 		<span id="step4_updates">Setting up Web Worker</span>
 		<span id="step4_detailed"></span>
 		<span id="step4_length">This step tends to take several minutes. Please be patient.</span>
 	</div>
 	<div id="step5" class="step">
 		<h1 id="step5_generating">Generating. . .</h1>
-		<img src="images/Loading.svg" style="display: block; margin-left: auto; margin-right: auto;">
+		<img src="./images/website/Loading.svg" style="display: block; margin-left: auto; margin-right: auto;">
 		<iframe id="step5_frame"></iframe>
 		<img id-="step5Secret" style="opacity: 0; position: absolute; left:1000px; top:-1000px;">
 		<canvas id="step5Canvas" width="516" height="792" style="display: none"/>
@@ -291,37 +292,37 @@
 						<div>
 							<div style="display: flex">
 								<div class="popup_custom_spells_school_item popup_custom_spells_item">
-									<img src="images/icons/icon_abjuration.png">
+									<img src="./images/website/icons/icon_abjuration.png">
 									<span>Abjuration</span>
 								</div>
 								<div class="popup_custom_spells_school_item popup_custom_spells_item">
-									<img src="images/icons/icon_conjuration.png">
+									<img src="./images/website/icons/icon_conjuration.png">
 									<span>Conjuration</span>
 								</div>
 								<div class="popup_custom_spells_school_item popup_custom_spells_item">
-									<img src="images/icons/icon_divination.png">
+									<img src="./images/website/icons/icon_divination.png">
 									<span>Divination</span>
 								</div>
 								<div class="popup_custom_spells_school_item popup_custom_spells_item">
-									<img src="images/icons/icon_evocation.png">
+									<img src="./images/website/icons/icon_evocation.png">
 									<span>Evocation</span>
 								</div>
 							</div>
 							<div style="display: flex">
 								<div class="popup_custom_spells_school_item popup_custom_spells_item">
-									<img src="images/icons/icon_enchantment.png">
+									<img src="./images/website/icons/icon_enchantment.png">
 									<span>Enchantment</span>
 								</div>
 								<div class="popup_custom_spells_school_item popup_custom_spells_item">
-									<img src="images/icons/icon_illusion.png">
+									<img src="./images/website/icons/icon_illusion.png">
 									<span>Illusion</span>
 								</div>
 								<div class="popup_custom_spells_school_item popup_custom_spells_item">
-									<img src="images/icons/icon_necromancy.png">
+									<img src="./images/website/icons/icon_necromancy.png">
 									<span>Necromancy</span>
 								</div>
 								<div class="popup_custom_spells_school_item popup_custom_spells_item">
-									<img src="images/icons/icon_transmutation.png">
+									<img src="./images/website/icons/icon_transmutation.png">
 									<span>Transmutation</span>
 								</div>
 							</div>
@@ -337,37 +338,37 @@
 						<div>
 							<div style="display: flex">
 								<div class="popup_custom_spells_class_item popup_custom_spells_item">
-									<img src="images/icons/class_bard.png">
+									<img src="./images/website/icons/class_bard.png">
 									<span>Bard</span>
 								</div>
 								<div class="popup_custom_spells_class_item popup_custom_spells_item">
-									<img src="images/icons/class_cleric.png">
+									<img src="./images/website/icons/class_cleric.png">
 									<span>Cleric</span>
 								</div>
 								<div class="popup_custom_spells_class_item popup_custom_spells_item">
-									<img src="images/icons/class_druid.png">
+									<img src="./images/website/icons/class_druid.png">
 									<span>Druid</span>
 								</div>
 								<div class="popup_custom_spells_class_item popup_custom_spells_item">
-									<img src="images/icons/class_paladin.png">
+									<img src="./images/website/icons/class_paladin.png">
 									<span>Paladin</span>
 								</div>
 							</div>
 							<div style="display: flex">
 								<div class="popup_custom_spells_class_item popup_custom_spells_item">
-									<img src="images/icons/class_ranger.png">
+									<img src="./images/website/icons/class_ranger.png">
 									<span>Ranger</span>
 								</div>
 								<div class="popup_custom_spells_class_item popup_custom_spells_item">
-									<img src="images/icons/class_sorcerer.png">
+									<img src="./images/website/icons/class_sorcerer.png">
 									<span>Sorcerer</span>
 								</div>
 								<div class="popup_custom_spells_class_item popup_custom_spells_item">
-									<img src="images/icons/class_warlock.png">
+									<img src="./images/website/icons/class_warlock.png">
 									<span>Warlock</span>
 								</div>
 								<div class="popup_custom_spells_class_item popup_custom_spells_item">
-									<img src="images/icons/class_wizard.png">
+									<img src="./images/website/icons/class_wizard.png">
 									<span>Wizard</span>
 								</div>
 							</div>
@@ -506,35 +507,35 @@
 								</div>
 								<div id="specialSelect_values" style="display: none; position: absolute; width: 100%; z-index: 10">
 									<div class="specialSelect_item">
-										<img src="images/icons/icon_abjuration.png">
+										<img src="./images/website/icons/icon_abjuration.png">
 										<span>Abjuration</span>
 									</div>
 									<div class="specialSelect_item">
-										<img src="images/icons/icon_conjuration.png">
+										<img src="./images/website/icons/icon_conjuration.png">
 										<span>Conjuration</span>
 									</div>
 									<div class="specialSelect_item">
-										<img src="images/icons/icon_divination.png">
+										<img src="./images/website/icons/icon_divination.png">
 										<span>Divination</span>
 									</div>
 									<div class="specialSelect_item">
-										<img src="images/icons/icon_enchantment.png">
+										<img src="./images/website/icons/icon_enchantment.png">
 										<span>Enchantment</span>
 									</div>
 									<div class="specialSelect_item">
-										<img src="images/icons/icon_evocation.png">
+										<img src="./images/website/icons/icon_evocation.png">
 										<span>Evocation</span>
 									</div>
 									<div class="specialSelect_item">
-										<img src="images/icons/icon_illusion.png">
+										<img src="./images/website/icons/icon_illusion.png">
 										<span>Illusion</span>
 									</div>
 									<div class="specialSelect_item">
-										<img src="images/icons/icon_necromancy.png">
+										<img src="./images/website/icons/icon_necromancy.png">
 										<span>Necromancy</span>
 									</div>
 									<div class="specialSelect_item">
-										<img src="images/icons/icon_transmutation.png">
+										<img src="./images/website/icons/icon_transmutation.png">
 										<span>Transmutation</span>
 									</div>
 								</div>
@@ -543,13 +544,13 @@
 						<td style="width: 250px">
 							<br>
 							<div>
-								<span style="white-space: nowrap"><img style="height: 16px;" src="./images/nBeebz/verbal.png"/>Verbal:<input id="addspell_verbal" type="checkbox" style="float: right" checked=""></span><br>
-								<span style="white-space: nowrap"><img style="height: 16px;" src="./images/nBeebz/somatic.png"/>Somatic:<input id="addspell_somatic" type="checkbox" style="float: right" checked=""></span><br>
-								<span style="white-space: nowrap"><img style="height: 16px;" src="./images/nBeebz/concentration.png"/>Concentration:<input id="addspell_concentration" style="float: right" type="checkbox" checked=""></span><br>
-								<span style="white-space: nowrap"><img style="height: 16px;" src="./images/nBeebz/ritual.png"/>Ritual:<input id="addspell_ritual" style="float: right" type="checkbox" checked=""></span>
+								<span style="white-space: nowrap"><img style="height: 16px;" src="./images/website/icons/verbal.png"/>Verbal:<input id="addspell_verbal" type="checkbox" style="float: right" checked=""></span><br>
+								<span style="white-space: nowrap"><img style="height: 16px;" src="./images/website/icons/somatic.png"/>Somatic:<input id="addspell_somatic" type="checkbox" style="float: right" checked=""></span><br>
+								<span style="white-space: nowrap"><img style="height: 16px;" src="./images/website/icons/concentration.png"/>Concentration:<input id="addspell_concentration" style="float: right" type="checkbox" checked=""></span><br>
+								<span style="white-space: nowrap"><img style="height: 16px;" src="./images/website/icons/ritual.png"/>Ritual:<input id="addspell_ritual" style="float: right" type="checkbox" checked=""></span>
 							</div>
 							<div id="popup4_material_container">
-								<img src="./images/nBeebz/material.png">
+								<img src="./images/website/icons/material.png">
 								<div>
 									<table style="height: 100%">
 										<tr>
@@ -585,36 +586,36 @@
 								<div>
 									<div style="display: flex">
 										<div class="popup_create_spells_class_item popup_custom_spells_item">
-											<img src="images/icons/class_bard.png">
+											<img src="./images/website/icons/class_bard.png">
 											<span>Bard</span>
 										</div>
 										<div class="popup_create_spells_class_item popup_custom_spells_item">
-											<img src="images/icons/class_cleric.png">
+											<img src="./images/website/icons/class_cleric.png">
 											<span>Cleric</span>
 										</div>
 										<div class="popup_create_spells_class_item popup_custom_spells_item">
-											<img src="images/icons/class_druid.png">
+											<img src="./images/website/icons/class_druid.png">
 											<span>Druid</span>
 										</div>
 										<div class="popup_create_spells_class_item popup_custom_spells_item">
-											<img src="images/icons/class_paladin.png">
+											<img src="./images/website/icons/class_paladin.png">
 											<span>Paladin</span>
 										</div>
 										
 										<div class="popup_create_spells_class_item popup_custom_spells_item">
-											<img src="images/icons/class_ranger.png">
+											<img src="./images/website/icons/class_ranger.png">
 											<span>Ranger</span>
 										</div>
 										<div class="popup_create_spells_class_item popup_custom_spells_item">
-											<img src="images/icons/class_sorcerer.png">
+											<img src="./images/website/icons/class_sorcerer.png">
 											<span>Sorcerer</span>
 										</div>
 										<div class="popup_create_spells_class_item popup_custom_spells_item">
-											<img src="images/icons/class_warlock.png">
+											<img src="./images/website/icons/class_warlock.png">
 											<span>Warlock</span>
 										</div>
 										<div class="popup_create_spells_class_item popup_custom_spells_item">
-											<img src="images/icons/class_wizard.png">
+											<img src="./images/website/icons/class_wizard.png">
 											<span>Wizard</span>
 										</div>
 									</div>
@@ -670,16 +671,20 @@
 					<br>
 					<table>
 						<tr>
-							<td rowspan="2" style="font-family: ringbearer;font-size: 120%;">Card's Border</td>
+							<td rowspan="3" style="font-family: ringbearer;font-size: 120%;">Card's Border</td>
 							<td>Thickness:</td>
 							<td><input id="settingsThickness" type="range" min="0" max="100"></td>
-							<td rowspan="2" style="position:relative;"><div style="margin-left: 10px;
+							<td rowspan="3" style="position:relative;"><div style="margin-left: 10px;
     position: absolute;
-    top: 0;"><div id="settingsPreview" style="border:0px solid black"><img src="./images/Back_Simple.png"></div><img id="settingsPreviewImg" src="./images/Back_Simple.png"></div></td>
+    top: 0;"><div id="settingsPreview" style="border:0px solid black"><img src="images/website/preview/Back_Simple.png"></div><img id="settingsPreviewImg" src="images/website/preview/Back_Simple.png"></div></td>
 						</tr>
 						<tr>
 							<td>Color:</td>
 							<td><input id="settingsColor" style="width: 95%;" type="color"></td>
+						</tr>
+						<tr>
+							<td>Disable:</td>
+							<td><input id="settingsDisable" type="checkbox"></td>
 						</tr>
 					</table><br>
 					<p style="font-family: mplantin;font-size: 120%; text-align: center;">Any questions just email: <em>contact&#64;frustratedprogrammer.com</em><br>Or leave an issue on the <a href="https://github.com/Frustrated-Programmer/card-generator">GitHub</a> page</p>
@@ -695,14 +700,14 @@
 				<p>Any questions just email: <em>contact&#64;frustratedprogrammer.com</em><br>Or leave an issue on the <a href="https://github.com/Frustrated-Programmer/card-generator">GitHub</a> page</p>
 				<div id="step6ArrowGroup">
 					<p>Extra Settings</p>
-					<img src="./images/curved-arrow.png" style="float:left;" id="step6Arrow">
+					<img src="./images/website/curved-arrow.png" style="float:left;" id="step6Arrow">
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
 <div id="footer">
-	<button id="settings"><img src="./images/Cog.png"></button>
+	<button id="settings"><img src="./images/website/Cog.png"></button>
 	<p>Created by <a target="_blank" rel="noopener noreferrer" href="http://frustratedprogrammer.com">Elijah
 		Anderson</a>.<br>Full credit and licences can be found: <a target="_blank" rel="noopener noreferrer"
 																   href="./credits.html">Here</a></p>
@@ -712,7 +717,7 @@
 	</p>
 	<div id="becomePatreon">
 		<a style="height: inherit; width: inherit" href="https://www.patreon.com/bePatron?u=32078542">
-			<img style="height: inherit; width: inherit" src="./images/become_a_patron_button.png"
+			<img style="height: inherit; width: inherit" src="./images/website/become_a_patron_button.png"
 				 alt="Become a patron button.">
 		</a>
 	</div>

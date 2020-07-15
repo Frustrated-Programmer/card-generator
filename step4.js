@@ -43,13 +43,13 @@ function loadImg(link){
 }
 
 //FRONT
-loadImg(document.getElementById("step3_preview_front").src).then(function(image){
+loadImg(step3FrontSrc).then(function(image){
     template.image = image;
     loaded[0] = true;
     if(loaded[0] && loaded[1] && loaded[2]) startCode();
 }).catch(console.error);
 //BACK
-if(step3Choices.back) loadImg(document.getElementById("step3_preview_back").src).then(function(image){
+if(step3Choices.back) loadImg(step3BackSrc).then(function(image){
     template.back = {
         active: true,
         url: image.url
@@ -65,7 +65,7 @@ let possibleSchools = ["abjuration", "enchantment", "conjuration", "illusion", "
 if(step3Choices.frontChoice === "nbeebz"){
     for(let i = 0; i < possibleSchools.length; i++){
         let imageObj = new Image();
-        loadImg("./images/nBeebz/template_" + possibleSchools[i] + ".png").then(function(image){
+        loadImg("./images/HighQuality/CardSides/template_" + possibleSchools[i] + ".png").then(function(image){
             schoolImgObjs[possibleSchools[i]] = image;
             loadedSchoolImg[i] = true;
             let allGood = true;
@@ -89,8 +89,6 @@ let scale = {
     w: 1,
     h: 1
 }, timeout = 0;
-let step4_updates = document.getElementById("step4_updates");
-let step4_detailed = document.getElementById("step4_detailed");
 
 function updateUser(detailed, display){
     if(detailed){
@@ -514,22 +512,27 @@ class PDFGen{
     }
 
     async _displayDetail(report, data, state, callback){
-        this._counter = this._counter + 1 || 1;
+        this._counter = this._counter || 0;
+        this.pageNumber = this.pageNumber || 0;
+        pdfgen.updatePageData(this._counter % pageData.cardCount.placeable);
+        this._counter++;
         updateUser(true, {counter: this._counter, front: data[0].front, type: "pdf"});
-        if(previousWasFront !== data[0].front || ((pageData.cardsOnThisPage + 1) === pageData.cardCount.placeable && this._counter !== 1)){
-            this.pageNumber = this.pageNumber + 1 || 1;
+        if(previousWasFront !== data[0].front || (pageData.cardsOnThisPage === pageData.cardCount.placeable && this._counter !== 1)){
+            this.pageNumber++;
             await pdfgen._newPage(report);
         }
         previousWasFront = data[0].front;
         for(let i = 0; i < data.length; i++){
             let randoColor = "#" + Math.floor(Math.random() * (0xFFFFFF + 1));
             if(data[i].type === "image"){
-                report.box(data[i].settings.x, data[i].settings.y, data[i].settings.width, data[i].settings.height, {
-                    borderColor: "#FF000000",
-                    thickness: cardBorder.thickness,
-                    fill: cardBorder.color,
-                    fillColor: cardBorder.color
-                });
+                if(!cardBorder.disable){
+                    report.box(data[i].settings.x + 1, data[i].settings.y + 1, (data[i].settings.width - 2), (data[i].settings.height - 2), {
+                        borderColor: "#FF000000",
+                        thickness: cardBorder.thickness,
+                        fill: cardBorder.color,
+                        fillColor: cardBorder.color
+                    });
+                }
                 report.image(data[i].image, {
                     x: data[i].settings.x,
                     y: data[i].settings.y,

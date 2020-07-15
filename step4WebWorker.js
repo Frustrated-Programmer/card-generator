@@ -20,6 +20,7 @@ module.exports = function(self){
     let callbacks = {};
     let step3Choices, cardBorder, overridePageData, fonts, template, spells;
     let cancelStep4 = false, started = false;
+    let schoolImgObjs = {};
     self.addEventListener('message',function(event){
         if(event.data.type === "start"){
             step3Choices = event.data.step3Choices;
@@ -94,8 +95,9 @@ module.exports = function(self){
         return tempSpell;
     }
 
-    function loadImg(link, id){
-        updateUser(true,'Loading image.');
+    function loadImg(link, id,context){
+        if(!context) updateUser(true,'Loading image: '+link);
+        else updateUser(true,context);
         return new Promise(function(cb, rj){
             callbacks[id] = cb;
             self.postMessage({type: "loadImg", link, id});
@@ -161,7 +163,7 @@ module.exports = function(self){
         return new Promise(function(cb, rj){
             if(cancelStep4) cb();
             if(spell){
-                loadImg("./images/nbeebzspellscards/" + spell.name.replace(/\//g, "_") + ".png", "SPELL_" + spell.name.replace(/\//g, "_")).then(function(image){
+                loadImg("./images/nbeebzspellscards/" + spell.name.replace(/\//g, "_") + ".png", "SPELL_" + spell.name.replace(/\//g, "_"),`Loading image #${index}/${spells.length} for: ${spell.name.replace(/\//g, "_")}`).then(function(image){
                     addNewCard(index, true, image.url).then(cb).catch(rj);
                 }).catch(rj);
             }
@@ -513,6 +515,7 @@ module.exports = function(self){
                         if(!size){
                             size = 200;
                             let fit = false;
+                            console.log(fonts[this.template[i].fontStyle]);
                             while(!fit){
                                 data = await this._getLineData(replacedText, this.template[i].width, this.template[i].height, fonts[this.template[i].fontStyle], size, i === 6);
 
@@ -596,22 +599,27 @@ module.exports = function(self){
         }
 
         async _displayDetail(report, data, state, callback){
-            this._counter = this._counter + 1 || 1;
+            this._counter = this._counter || 0;
+            this.pageNumber = this.pageNumber || 0;
+            pdfgen.updatePageData(this._counter % pageData.cardCount.placeable);
+            this._counter++;
             updateUser(true, {counter: this._counter, front: data[0].front, type: "pdf"});
-            if(previousWasFront !== data[0].front || ((pageData.cardsOnThisPage + 1) === pageData.cardCount.placeable && this._counter !== 1)){
-                this.pageNumber = this.pageNumber + 1 || 1;
+            if(previousWasFront !== data[0].front || (pageData.cardsOnThisPage === pageData.cardCount.placeable && this._counter !== 1)){
+                this.pageNumber++;
                 await pdfgen._newPage(report);
             }
             previousWasFront = data[0].front;
             for(let i = 0; i < data.length; i++){
                 let randoColor = "#" + Math.floor(Math.random() * (0xFFFFFF + 1));
                 if(data[i].type === "image"){
-                    report.box(data[i].settings.x, data[i].settings.y, data[i].settings.width, data[i].settings.height, {
-                        borderColor: "#FF000000",
-                        thickness: cardBorder.thickness,
-                        fill: cardBorder.color,
-                        fillColor: cardBorder.color
-                    });
+                    if(!cardBorder.disable){
+                        report.box(data[i].settings.x + 1, data[i].settings.y + 1, (data[i].settings.width - 2), (data[i].settings.height - 2), {
+                            borderColor: "#FF000000",
+                            thickness: cardBorder.thickness,
+                            fill: cardBorder.color,
+                            fillColor: cardBorder.color
+                        });
+                    }
                     report.image(data[i].image, {
                         x: data[i].settings.x,
                         y: data[i].settings.y,
@@ -664,16 +672,15 @@ module.exports = function(self){
 
     function step4(step3FrontSrc, step3BackSrc){
         let loaded = [false, !step3Choices.back, step3Choices.frontChoice !== "nbeebz"];
-
         //FRONT
-        loadImg(step3FrontSrc, "FRONT").then(function(image){
+        loadImg(step3FrontSrc, "FRONT","Loading front side of card.").then(function(image){
             template.image = image;
             loaded[0] = true;
             if(loaded[0] && loaded[1] && loaded[2]) startCode();
         }).catch(console.error);
         //BACK
         if(step3Choices.back){
-            loadImg(step3BackSrc, "BACK").then(function(image){
+            loadImg(step3BackSrc, "BACK","Loading back side of card.").then(function(image){
                 template.back = {
                     active: true,
                     url: image.url
@@ -684,12 +691,11 @@ module.exports = function(self){
         }
 
         //SCHOOL
-        let schoolImgObjs = {};
         let loadedSchoolImg = [false, false, false, false, false, false, false, false, false];
         let possibleSchools = ["abjuration", "enchantment", "conjuration", "illusion", "transmutation", "divination", "necromancy", "evocation", "none"];
         if(step3Choices.frontChoice === "nbeebz"){
             for(let i = 0; i < possibleSchools.length; i++){
-                loadImg("./images/nBeebz/template_" + possibleSchools[i] + ".png", "SCHOOL_" + possibleSchools[i]).then(function(image){
+                loadImg("./images/HighQuality/CardSides/template_" + possibleSchools[i] + ".png", "SCHOOL_" + possibleSchools[i],`Loading: template_${possibleSchools[i]}.png`).then(function(image){
                     schoolImgObjs[possibleSchools[i]] = image;
                     loadedSchoolImg[i] = true;
                     let allGood = true;

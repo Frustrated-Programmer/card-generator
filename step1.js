@@ -30,6 +30,7 @@ let material = document.getElementById("material");
 let concentration = document.getElementById("concentration");
 let hoverItem = document.getElementById("popup_custom_spells_code_hover");
 let textarea = document.getElementById("popup_custom_spells_code_textarea");
+let popupDone = document.getElementById('popup1_done');
 let Step1PopupData = {
     school: {},
     class: {
@@ -119,6 +120,8 @@ function updateCode(){
         levelCode += "data.range_num > " + Step1PopupData.level.high;
     }
     if(levelCode.length) addCode("(" + levelCode + ")");
+    popupDone.disabled = (code.length === 0);
+
     textarea.value = code;
 }
 function updatePopupStep1(){
@@ -136,8 +139,8 @@ function updatePopupStep1(){
     material = document.getElementById("material");
     concentration = document.getElementById("concentration");
     hoverItem = document.getElementById("popup_custom_spells_code_hover");
-
-    document.getElementById('popup1_done').onclick = function(){
+    popupDone = document.getElementById('popup1_done');
+    popupDone.onclick = function(){
         let funct = "function checker(data){\n    return (" + textarea.value + ");\n};";
         let success;
         try{
@@ -154,6 +157,10 @@ function updatePopupStep1(){
             updateStep();
         }
     };
+
+    textarea.oninput = function(){
+        popupDone.disabled = textarea.value.length === 0;
+    }
 //SCHOOL
     for(let i = 0; i < schoolBttns.length; i++){
         let schoolName = schoolBttns[i].lastElementChild.innerText.toLowerCase();
@@ -286,5 +293,6 @@ function updatePopupStep1(){
     concentration.onchange = function(){
         Step1PopupData.concentration = this.value;
         updateCode();
-    };
+    }
+    updateCode();
 }

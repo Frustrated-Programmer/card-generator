@@ -23,7 +23,8 @@ const steps = [1, 2, 3, 35, 4, 5];
 const spellsJSON = require("./spells.json");
 const fontkit = require("fontkit");
 const worker = require('webworkify');
-require("buffer");
+const blob = require("blob-stream");
+const Report = require("fluentreports").Report;
 
 let customSpells = [];
 let cards = {
@@ -66,12 +67,7 @@ let ColorAndClassTemplate = {
         active: false,
         url: ""
     },
-    image: {
-        url: step5Canvas.toDataURL(),
-        width: step5Canvas.width,
-        height: step5Canvas.height,
-        src: step5Canvas
-    },
+    image: {},
     details: [{
         x: 11.941666666666606,
         y: 12.799999999999997,
@@ -163,7 +159,8 @@ let overridePageData = {
 };
 let cardBorder = {
     color: "#000000",
-    thickness: 0
+    thickness: 0,
+    disable:false
 };
 const templates = ["title", "school", "level", "description", "range", "casting", "materials", "athigherlevel"];
 let unusedTemplates = [...templates];
@@ -196,7 +193,8 @@ for(let i = 0; i < steps.length; i++){
 
 let front_select = document.getElementById("front_card_select");
 let back_select = document.getElementById("back_card_select");
-
+let select_front_for_colors = document.getElementById('select_front_for_colors');
+let select_front_for_class = document.getElementById('select_front_for_class');
 function getCustomSpell(spell){
     let tempSpell = {
         name: spell.name || "",
@@ -301,6 +299,11 @@ const SuccessSFX = new Audio("./Success.mp3");
 let step4Worker;
 let step4_updates = document.getElementById("step4_updates");
 let step4_detailed = document.getElementById("step4_detailed");
+let step3_preview_front = document.getElementById('step3_preview_front');
+let step3_preview_back = document.getElementById('step3_preview_back');
+let select_back_for_class = document.getElementById('select_back_for_class');
+let step3FrontSrc = "http://:0/";
+let step3BackSrc = "http://:0/";
 function runCode(path){
     function evalIt(){
         fetch(path).then(response => response.text()).then(function(code){
@@ -311,8 +314,31 @@ function runCode(path){
         step4Worker.terminate();
         step4Worker = undefined;
     }
-    console.log(`Running: `, path);
     if(currentStep === 4){
+        switch(step3Choices.frontChoice){
+            case 'none':
+                //NOTHING
+                break;
+            case 'color':
+                step3FrontSrc = './images/HighQuality/CardSides/front_'+(select_front_for_colors.value.toString().toLowerCase())+'.png';
+                break;
+            case 'class':
+                step3FrontSrc = './images/HighQuality/CardSides/'+(select_front_for_class.value.toString().toLowerCase())+'_front.png';
+                break;
+            case 'nbeebz':
+            case 'custom':
+                step3FrontSrc =  step3_preview_front.src;
+                break;
+        }
+        switch(step3Choices.backChoice){
+            case 'nothing':break;
+            case 'upload':step3BackSrc = step3_preview_back.src;break;
+            case 'simple': step3BackSrc ='./images/HighQuality/CardSides/Back_Simple.png';break;
+            case 'complex': step3BackSrc ='./images/HighQuality/CardSides/Back_Complex.png';break;
+            case 'class':
+                step3BackSrc ='./images/HighQuality/CardSides/'+(select_back_for_class.value.toString().toLowerCase())+'_back.png';
+                break;
+        }
         if(typeof (Worker) !== "undefined"){
             if(step4Worker === undefined){
                 step4Worker = new worker(require("./step4WebWorker.js"));
@@ -322,8 +348,8 @@ function runCode(path){
                     cardBorder,
                     overridePageData,
                     fonts,
-                    step3FrontSrc: document.getElementById('step3_preview_front').src,
-                    step3BackSrc: document.getElementById('step3_preview_back').src,
+                    step3FrontSrc,
+                    step3BackSrc,
                     template,
                     spells,
                 });
@@ -375,13 +401,13 @@ function runCode(path){
                         currentStep++;
                         updateStep();
                     }
-                    else console.log(`Unknown type: ${event.data.type}`);
+                    else console.error(`Unknown type: ${event.data.type}`);
                 }
             }
         }
         else{
 //          console.error("Currently trying to come up with a way to make this smoother. Sorry for the lag");
-            console.error('WebWorkers Aren\'t supported. Running it the un-optimized way.')
+            console.error('WebWorkers Aren\'t supported on your browser. Running it the un-optimized way.')
             evalIt();
         }
     }
@@ -814,10 +840,12 @@ function updatePopup5(){
         settingsPreview.style.top = (0 - cardBorder.thickness) + "px";
         settingsPreview.style.left = (0 - cardBorder.thickness) + "px";
         settingsPreview.style.border = cardBorder.thickness + "px solid " + cardBorder.color;
+        settingsPreview.style.opacity = (cardBorder.disable ? 0 : 1);
     };
     settingsPreview.style.height = settingsPreview.firstElementChild.clientHeight + "px";
     let settingsThickness = document.getElementById("settingsThickness");
     let settingsColor = document.getElementById("settingsColor");
+    let settingsDisable = document.getElementById('settingsDisable');
     settingsThickness.oninput = function(){
         cardBorder.thickness = parseInt(this.value, 10) / 10;
         settingsPreview.update();
@@ -826,6 +854,11 @@ function updatePopup5(){
         cardBorder.color = this.value;
         settingsPreview.update();
     };
+    settingsDisable.oninput = function(){
+        cardBorder.disable = !!this.checked;
+        settingsPreview.update();
+    }
+    settingsDisable.checked = cardBorder.disable;
     settingsColor.value = cardBorder.color;
     settingsThickness.value = (cardBorder.thickness * 10);
     settingsPreview.update();
@@ -847,7 +880,7 @@ function updatePopup6(){
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./spells.json":312,"./step4WebWorker.js":313,"buffer":190,"fontkit":235,"webworkify":311}],2:[function(require,module,exports){
+},{"./spells.json":312,"./step4WebWorker.js":313,"blob-stream":162,"buffer":190,"fluentreports":233,"fontkit":235,"webworkify":311}],2:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -77902,7 +77935,7 @@ module.exports=[
 		"atHigherLevel": "<p>When you cast this spell using a spell slot of 3rd level or higher, you can target one additional creature for each slot level above 2nd.</p>"
 	},
 	{
-		"name": "Otiluke's Irresistible Dance",
+		"name": "Otto's Irresistible Dance",
 		"classes": [
 			"bard",
 			"wizard"
@@ -80875,6 +80908,7 @@ module.exports = function(self){
     let callbacks = {};
     let step3Choices, cardBorder, overridePageData, fonts, template, spells;
     let cancelStep4 = false, started = false;
+    let schoolImgObjs = {};
     self.addEventListener('message',function(event){
         if(event.data.type === "start"){
             step3Choices = event.data.step3Choices;
@@ -80949,8 +80983,9 @@ module.exports = function(self){
         return tempSpell;
     }
 
-    function loadImg(link, id){
-        updateUser(true,'Loading image.');
+    function loadImg(link, id,context){
+        if(!context) updateUser(true,'Loading image: '+link);
+        else updateUser(true,context);
         return new Promise(function(cb, rj){
             callbacks[id] = cb;
             self.postMessage({type: "loadImg", link, id});
@@ -81016,7 +81051,7 @@ module.exports = function(self){
         return new Promise(function(cb, rj){
             if(cancelStep4) cb();
             if(spell){
-                loadImg("./images/nbeebzspellscards/" + spell.name.replace(/\//g, "_") + ".png", "SPELL_" + spell.name.replace(/\//g, "_")).then(function(image){
+                loadImg("./images/nbeebzspellscards/" + spell.name.replace(/\//g, "_") + ".png", "SPELL_" + spell.name.replace(/\//g, "_"),`Loading image #${index}/${spells.length} for: ${spell.name.replace(/\//g, "_")}`).then(function(image){
                     addNewCard(index, true, image.url).then(cb).catch(rj);
                 }).catch(rj);
             }
@@ -81368,6 +81403,7 @@ module.exports = function(self){
                         if(!size){
                             size = 200;
                             let fit = false;
+                            console.log(fonts[this.template[i].fontStyle]);
                             while(!fit){
                                 data = await this._getLineData(replacedText, this.template[i].width, this.template[i].height, fonts[this.template[i].fontStyle], size, i === 6);
 
@@ -81451,22 +81487,27 @@ module.exports = function(self){
         }
 
         async _displayDetail(report, data, state, callback){
-            this._counter = this._counter + 1 || 1;
+            this._counter = this._counter || 0;
+            this.pageNumber = this.pageNumber || 0;
+            pdfgen.updatePageData(this._counter % pageData.cardCount.placeable);
+            this._counter++;
             updateUser(true, {counter: this._counter, front: data[0].front, type: "pdf"});
-            if(previousWasFront !== data[0].front || ((pageData.cardsOnThisPage + 1) === pageData.cardCount.placeable && this._counter !== 1)){
-                this.pageNumber = this.pageNumber + 1 || 1;
+            if(previousWasFront !== data[0].front || (pageData.cardsOnThisPage === pageData.cardCount.placeable && this._counter !== 1)){
+                this.pageNumber++;
                 await pdfgen._newPage(report);
             }
             previousWasFront = data[0].front;
             for(let i = 0; i < data.length; i++){
                 let randoColor = "#" + Math.floor(Math.random() * (0xFFFFFF + 1));
                 if(data[i].type === "image"){
-                    report.box(data[i].settings.x, data[i].settings.y, data[i].settings.width, data[i].settings.height, {
-                        borderColor: "#FF000000",
-                        thickness: cardBorder.thickness,
-                        fill: cardBorder.color,
-                        fillColor: cardBorder.color
-                    });
+                    if(!cardBorder.disable){
+                        report.box(data[i].settings.x + 1, data[i].settings.y + 1, (data[i].settings.width - 2), (data[i].settings.height - 2), {
+                            borderColor: "#FF000000",
+                            thickness: cardBorder.thickness,
+                            fill: cardBorder.color,
+                            fillColor: cardBorder.color
+                        });
+                    }
                     report.image(data[i].image, {
                         x: data[i].settings.x,
                         y: data[i].settings.y,
@@ -81519,16 +81560,15 @@ module.exports = function(self){
 
     function step4(step3FrontSrc, step3BackSrc){
         let loaded = [false, !step3Choices.back, step3Choices.frontChoice !== "nbeebz"];
-
         //FRONT
-        loadImg(step3FrontSrc, "FRONT").then(function(image){
+        loadImg(step3FrontSrc, "FRONT","Loading front side of card.").then(function(image){
             template.image = image;
             loaded[0] = true;
             if(loaded[0] && loaded[1] && loaded[2]) startCode();
         }).catch(console.error);
         //BACK
         if(step3Choices.back){
-            loadImg(step3BackSrc, "BACK").then(function(image){
+            loadImg(step3BackSrc, "BACK","Loading back side of card.").then(function(image){
                 template.back = {
                     active: true,
                     url: image.url
@@ -81539,12 +81579,11 @@ module.exports = function(self){
         }
 
         //SCHOOL
-        let schoolImgObjs = {};
         let loadedSchoolImg = [false, false, false, false, false, false, false, false, false];
         let possibleSchools = ["abjuration", "enchantment", "conjuration", "illusion", "transmutation", "divination", "necromancy", "evocation", "none"];
         if(step3Choices.frontChoice === "nbeebz"){
             for(let i = 0; i < possibleSchools.length; i++){
-                loadImg("./images/nBeebz/template_" + possibleSchools[i] + ".png", "SCHOOL_" + possibleSchools[i]).then(function(image){
+                loadImg("./images/HighQuality/CardSides/template_" + possibleSchools[i] + ".png", "SCHOOL_" + possibleSchools[i],`Loading: template_${possibleSchools[i]}.png`).then(function(image){
                     schoolImgObjs[possibleSchools[i]] = image;
                     loadedSchoolImg[i] = true;
                     let allGood = true;
