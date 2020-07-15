@@ -20,6 +20,7 @@ let hovering=[false,false];
 let shownDiv;
 let dissapearTimeout;
 let spell_preview = document.getElementById("spell_preview");
+let spell_preview_list = document.getElementById('spell_preview_list');
 spell_preview.onmouseenter = function (){
     hovering[1] = true;
     this.show();
@@ -30,9 +31,9 @@ spell_preview.onmouseleave = function (){
 }
 spell_preview.show = function(spell){
     if(dissapearTimeout) clearTimeout(dissapearTimeout);
-    spell_preview.style.display = "block";
+    spell_preview.style.display = "grid";
     if(spell && spell.name){
-        while(spell_preview.firstElementChild) spell_preview.firstElementChild.remove();
+        while(spell_preview_list.firstElementChild) spell_preview_list.firstElementChild.remove();
         previewSpell(spell);
     }
 };
@@ -85,22 +86,22 @@ step2_spell_list.onmousemove = function(e){
 function previewSpell(spell){
     spell = getCustomSpell(spell);
     spell_preview.style.left = mousePos.x+"px";
-    spell_preview.style.width = "auto";
-    if(step2_spell_list.clientWidth - mousePos.x < 300){
-        spell_preview.style.left = (step2_spell_list.clientWidth - 300) + "px";
-        spell_preview.style.width = 300+"px";
+    spell_preview.style.width = "400px";
+    if(step2_spell_list.clientWidth - mousePos.x <400){
+        spell_preview.style.left = (step2_spell_list.clientWidth - 400) + "px";
+        spell_preview.style.width = 400+"px";
     }
     spell_preview.style.top = mousePos.y+"px";
     if(step2_spell_list.clientHeight - mousePos.y < 100){
         spell_preview.style.top = (step2_spell_list.clientHeight - 100) + "px";
     }
     let span = document.createElement('span');
-    span.innerText = spell.name;
+    span.innerHTML = spell.name;
     span.style.fontFamily = "ringbearer";
     span.style.fontSize = "120%";
     span.style.position="relative";
     span.style.left="50px";
-    spell_preview.appendChild(span);
+    spell_preview_list.appendChild(span);
     let table = document.createElement("table");
     for(let i in spell){
         if(i === "name")continue;
@@ -125,18 +126,18 @@ function previewSpell(spell){
         let insert3 = false;
         if(text.length > 50){
               insert3 = document.createElement('span');
-              insert3.innerText = text;
+              insert3.innerHTML = text;
               insert3.style.display = "none";
               text = text.substring(0,40) + "...";
         }
-        insert2.innerText = text;
+        insert2.innerHTML = text;
         col1.appendChild(insert1);
         col2.appendChild(insert2);
         if(insert3){
             col2.style.display = "flex";
             col2.appendChild(insert3);
             let bttn = document.createElement('button');
-            bttn.innerText = "more";
+            bttn.innerHTML = "more";
             bttn.showing = false;
             bttn.onclick = function(){
                 this.showing = !this.showing;
@@ -156,7 +157,7 @@ function previewSpell(spell){
         row.appendChild(col2);
         table.appendChild(row);
     }
-    spell_preview.appendChild(table);
+    spell_preview_list.appendChild(table);
 }
 
 function createStep2Elem(spell, index){
