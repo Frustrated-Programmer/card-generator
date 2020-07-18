@@ -594,7 +594,8 @@ module.exports = function(self){
                         width: (options.width * scale.x) || (200),
                         height: (options.height * scale.y) || (200)
                     },
-                    "type": "image"
+                    "type": "image",
+                    front,
                 }];
                 if(front){
                     let replacedText;
@@ -686,10 +687,11 @@ module.exports = function(self){
         async _displayDetail(report, data, state, callback){
             this._counter = this._counter || 0;
             this.pageNumber = this.pageNumber || 0;
-            pdfgen.updatePageData((pageData.cardCount.placeable > 1 ? (this._counter % pageData.cardCount.placeable) : (this._counter ? 1 : 0)));
+            this.cardsOnPage = this.cardsOnPage || 0;
             updateUser(true, {counter: this._counter, front: data[0].front, type: "pdf"});
-            if(previousWasFront !== data[0].front || (pageData.cardsOnThisPage === pageData.cardCount.placeable && this._counter !== 0)){
+            if((previousWasFront !== data[0].front || this.cardsOnPage === pageData.cardCount.placeable) && this._counter !== 0){
                 this.pageNumber++;
+                this.cardsOnPage = 0;
                 await pdfgen._newPage(report);
             }
             previousWasFront = data[0].front;
@@ -725,6 +727,7 @@ module.exports = function(self){
             if(data[0].front) pageData.cardCount.placed.front++;
             else pageData.cardCount.placed.back++;
             this._counter++;
+            this.cardsOnPage++;
             callback();
         }
 
