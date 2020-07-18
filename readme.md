@@ -29,3 +29,14 @@ This page is the least important, but without a loading screen user's may thing 
 ###### Show cards
 This page is where the user's see a PDF of all their cards front and backs aligned. The user can then download their PDF or just print them from there.
 
+#Planned Features
+ - Update CSS so the site doesn't look bad for browsers other than Chrome.
+ - at somepoint try allow HTML ul,li,b,i into spell cards to have styled changes.
+ - Make Step 3.5's ability to customize spell cards much more advanced
+   - Ability to decide which background image to use depending on date
+   - Ability to import images into the custom spell
+   - Ability to import fonts
+   - Ability to make certain elements not appear depending on data
+ - Ability to edit custom spells
+ - Ability to overwrite existing spells
+ - Do research into Pathfinder and other RPG games to find out what kind of spell cards they would use.

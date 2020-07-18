@@ -623,6 +623,10 @@ document.getElementById("step35_AddInput").onclick = function(){
 };
 document.getElementById("step35_continue").onclick = function(){
     template = {
+        cardSize:{
+            width:300,
+            height:420
+        },
         details:[]
     };
     for(let i = 0; i < addedElems.length; i++){

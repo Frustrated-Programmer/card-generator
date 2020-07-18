@@ -46,7 +46,7 @@ spell_preview.hide = function(force){
         shownDiv = null;
         clearTimeout(dissapearTimeout);
         dissapearTimeout = false;
-    }, (force ? 0 : 2000));
+    }, (force ? 0 : 500));
 };
 spell_preview.hide(true);
 let step2_spell_list = document.getElementById("step2_spell_list");
@@ -85,14 +85,14 @@ step2_spell_list.onmousemove = function(e){
 
 function previewSpell(spell){
     spell = getCustomSpell(spell);
-    spell_preview.style.left = mousePos.x+"px";
+    spell_preview.style.left = (mousePos.x + 10)+"px";
     spell_preview.style.width = "400px";
-    if(step2_spell_list.clientWidth - mousePos.x <400){
-        spell_preview.style.left = (step2_spell_list.clientWidth - 400) + "px";
+    if(step2_spell_list.clientWidth - mousePos.x <385){
+        spell_preview.style.left = (step2_spell_list.clientWidth - 410) + "px";
         spell_preview.style.width = 400+"px";
     }
-    spell_preview.style.top = mousePos.y+"px";
-    if(step2_spell_list.clientHeight - mousePos.y < 100){
+    spell_preview.style.top = (mousePos.y - 175)+"px";
+    if(step2_spell_list.clientHeight - mousePos.y < -50){
         spell_preview.style.top = (step2_spell_list.clientHeight - 100) + "px";
     }
     let span = document.createElement('span');

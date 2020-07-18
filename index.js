@@ -19,19 +19,10 @@ const classes = ["bard", "cleric", "wizard", "druid", "sorcerer", "warlock", "ra
 const schools = ["abjuration", "conjuration", "divination", "enchantment", "evocation", "illusion", "necromancy", "transmutation"];
 const steps = [1, 2, 3, 35, 4, 5];
 const spellsJSON = require("./spells.json");
-const fontkit = require("fontkit");
-const worker = require('webworkify');
+const worker = require("webworkify");
 const blob = require("blob-stream");
 const Report = require("fluentreports").Report;
-
-let customSpells = [];
-let cards = {
-    columns: 4,
-    rows: 2,
-    width: 822,
-    height: 1122,
-    margin: 30
-};
+const SuccessSFX = new Audio("./Success.mp3");
 const error_name = document.getElementById("error_name");
 const error_exp = document.getElementById("error_exp");
 const error_msg = document.getElementById("error_msg");
@@ -39,28 +30,47 @@ const error = document.getElementById("error");
 const step35 = document.getElementById("header_step_35");
 const title = document.getElementById("title");
 const header = document.getElementById("header");
-const ID = Math.random().toString(36).substr(2, 9);
+const step4_updates = document.getElementById("step4_updates");
+const step4_detailed = document.getElementById("step4_detailed");
+const step3_preview_front = document.getElementById("step3_preview_front");
+const step3_preview_back = document.getElementById("step3_preview_back");
+const select_back_for_class = document.getElementById("select_back_for_class");
+const templates = ["title", "school", "level", "description", "range", "casting", "materials", "athigherlevel"];
+const front_select = document.getElementById("front_card_select");
+const back_select = document.getElementById("back_card_select");
+let popup4 = document.getElementById("popup4");
+let popup4_title = document.getElementById("popup4_title");
+let settingsBttn = document.getElementById("settings");
 let fonts = {};
+let customSpells = [];
+let step4Worker;
+let step3FrontSrc = "http://:0/";
+let step3BackSrc = "http://:0/";
+let popup4FuncSave, popup4FuncCancel;
+let addCardData = {
+    "name": "",
+    "classes": {},
+    "school": "",
+    "level": 0,
+    "range": "",
+    "duration": "",
+    "casting": "",
+    "verbal": false,
+    "somatic": false,
+    "material": 0,
+    "materials": "",
+    "concentration": false,
+    "ritual": false,
+    "description": "",
+    "atHigherLevel": ""
 
-function _loadFont(which){
-    fetch("./fonts/" + which + ".ttf").then((Response) => {
-        Response.arrayBuffer().then(function(ArrayBuffer){
-            fonts[which] = fontkit.create(Buffer.from(ArrayBuffer), null);
-        });
-    });
-}
-
-_loadFont("widelatin");
-_loadFont("serif");
-_loadFont("sans-serif");
-_loadFont("ringbearer");
-_loadFont("mplantin");
-_loadFont("monospace");
-_loadFont("impact");
-_loadFont("cursive");
-
+};
 let template = {};
 let ColorAndClassTemplate = {
+    cardSize:{
+        width:300,
+        height:420
+    },
     back: {
         active: false,
         url: ""
@@ -97,7 +107,7 @@ let ColorAndClassTemplate = {
         x: 11.219926348382359,
         y: 151,
         width: 277.4434806365685,
-        height: 179,
+        height: 170,
         fontStyle: "mplantin",
         fontSize: 0,
         textAlign: "Left",
@@ -158,21 +168,16 @@ let overridePageData = {
 let cardBorder = {
     color: "#000000",
     thickness: 0,
-    disable:false
+    disable: false
 };
-const templates = ["title", "school", "level", "description", "range", "casting", "materials", "athigherlevel"];
 let unusedTemplates = [...templates];
-let addedElems = [];
+let addedElems = []; //Elements Added in Step 3.5
 let step3Choices = {
     front: null,
     back: null
 };
 let step35Int;
 let cancelStep4 = true;
-document.getElementById("close_error").onclick = function(){
-    error.style.display = "none";
-};
-
 let popup, popup_body;
 let stepsElem = [];
 let spells = []; //set in step2
@@ -180,19 +185,6 @@ let headerBttns = [];
 let step1Function = ""; //set in step1, used in step2
 let currentStep = 0;
 
-for(let i = 0; i < steps.length; i++){
-    stepsElem.push(document.getElementById("step" + steps[i]));
-    headerBttns.push(document.getElementById("header_step_" + steps[i]));
-    headerBttns[headerBttns.length - 1].onclick = function(){
-        currentStep = i;
-        updateStep();
-    };
-}
-
-let front_select = document.getElementById("front_card_select");
-let back_select = document.getElementById("back_card_select");
-let select_front_for_colors = document.getElementById('select_front_for_colors');
-let select_front_for_class = document.getElementById('select_front_for_class');
 function getCustomSpell(spell){
     let tempSpell = {
         name: spell.name || "",
@@ -289,59 +281,61 @@ function updateStep(){
     if(steps[currentStep] !== 5) runCode("./step" + steps[currentStep] + ".js");
     else if(steps[currentStep] === 5){
         SuccessSFX.play();
-        displayPopup(6);
-        updatePopup6();
+        setTimeout(function(){
+            displayPopup(6);
+            updatePopup6();
+        },10000)
     }
 }
-const SuccessSFX = new Audio("./Success.mp3");
-let step4Worker;
-let step4_updates = document.getElementById("step4_updates");
-let step4_detailed = document.getElementById("step4_detailed");
-let step3_preview_front = document.getElementById('step3_preview_front');
-let step3_preview_back = document.getElementById('step3_preview_back');
-let select_back_for_class = document.getElementById('select_back_for_class');
-let step3FrontSrc = "http://:0/";
-let step3BackSrc = "http://:0/";
+
 function runCode(path){
     function evalIt(){
         fetch(path).then(response => response.text()).then(function(code){
             eval(code);
         });
     }
+
     if(step4Worker !== undefined){
         step4Worker.terminate();
         step4Worker = undefined;
     }
     if(currentStep === 4){
         switch(step3Choices.frontChoice){
-            case 'none':
+            case "none":
                 //NOTHING
                 break;
-            case 'color':
-                step3FrontSrc = './images/HighQuality/CardSides/front_'+(select_front_for_colors.value.toString().toLowerCase())+'.png';
+            case "color":
+                step3FrontSrc = "./images/HighQuality/CardSides/front_" + (select_front_for_colors.value.toString().toLowerCase()) + ".png";
                 break;
-            case 'class':
-                step3FrontSrc = './images/HighQuality/CardSides/'+(select_front_for_class.value.toString().toLowerCase())+'_front.png';
+            case "class":
+                step3FrontSrc = "./images/HighQuality/CardSides/" + (select_front_for_class.value.toString().toLowerCase()) + "_front.png";
                 break;
-            case 'nbeebz':
-            case 'custom':
-                step3FrontSrc =  step3_preview_front.src;
+            case "nbeebz":
+            case "custom":
+                step3FrontSrc = step3_preview_front.src;
                 break;
         }
         switch(step3Choices.backChoice){
-            case 'nothing':break;
-            case 'upload':step3BackSrc = step3_preview_back.src;break;
-            case 'simple': step3BackSrc ='./images/HighQuality/CardSides/Back_Simple.png';break;
-            case 'complex': step3BackSrc ='./images/HighQuality/CardSides/Back_Complex.png';break;
-            case 'class':
-                step3BackSrc ='./images/HighQuality/CardSides/'+(select_back_for_class.value.toString().toLowerCase())+'_back.png';
+            case "nothing":
+                break;
+            case "upload":
+                step3BackSrc = step3_preview_back.src;
+                break;
+            case "simple":
+                step3BackSrc = "./images/HighQuality/CardSides/Back_Simple.png";
+                break;
+            case "complex":
+                step3BackSrc = "./images/HighQuality/CardSides/Back_Complex.png";
+                break;
+            case "class":
+                step3BackSrc = "./images/HighQuality/CardSides/" + (select_back_for_class.value.toString().toLowerCase()) + "_back.png";
                 break;
         }
         if(typeof (Worker) !== "undefined"){
             if(step4Worker === undefined){
                 step4Worker = new worker(require("./step4WebWorker.js"));
                 step4Worker.postMessage({
-                    type:"start",
+                    type: "start",
                     step3Choices,
                     cardBorder,
                     overridePageData,
@@ -349,7 +343,7 @@ function runCode(path){
                     step3FrontSrc,
                     step3BackSrc,
                     template,
-                    spells,
+                    spells
                 });
                 step4Worker.onmessage = function(event){
                     if(event.data.type === "evalMe") eval(event.data.function);
@@ -377,11 +371,11 @@ function runCode(path){
                             let url = canvas.toDataURL().toString();
                             canvas.remove();
                             step4Worker.postMessage({
-                                type:"callback",
+                                type: "callback",
                                 url: url,
                                 width: imageObj.width,
                                 height: imageObj.height,
-                                id:event.data.id
+                                id: event.data.id
                             });
                         };
                         imageObj.src = event.data.link;
@@ -390,7 +384,7 @@ function runCode(path){
                         let http = new XMLHttpRequest();
                         http.open("HEAD", event.data.url, false);
                         http.send();
-                        step4Worker.postMessage({type:"callback",id:event.data.id,output:http.status != 404});
+                        step4Worker.postMessage({type: "callback", id: event.data.id, output: http.status != 404});
                     }
                     else if(event.data.type === "done"){
                         document.getElementById("step5_frame").src = event.data.url;
@@ -399,14 +393,21 @@ function runCode(path){
                         currentStep++;
                         updateStep();
                     }
+                    else if(event.data.type === "fontArrayBuffer"){
+                        fetch(event.data.url).then(function(response){
+                            response.arrayBuffer().then(function(ArrayBuffer){
+                                step4Worker.postMessage({type: "callback", ArrayBuffer,id:event.data.id});
+                            });
+                        });
+                    }
                     else console.error(`Unknown type: ${event.data.type}`);
-                }
+                };
             }
         }
         else{
-//          console.error("Currently trying to come up with a way to make this smoother. Sorry for the lag");
-            console.error('WebWorkers Aren\'t supported on your browser. Running it the un-optimized way.')
-            evalIt();
+            console.error("WebWorkers Aren't supported on your browser. Try another browser or disable any extensions that might prevent a webworker from running.");
+            step4_updates.innerText = "WebWorkers Aren't supported on your browser.";
+            step4_detailed.innerText = "Try another browser or disable any extensions that might prevent a webworker from running.";
         }
     }
     else{
@@ -495,29 +496,114 @@ function resetPopup(which){
     };
 }
 
-let popup4 = document.getElementById("popup4");
-let popup4_title = document.getElementById("popup4_title");
-let popup4FuncSave, popup4FuncCancel;
-let addCardData = {
-    "name": "",
-    "classes": {},
-    "school": "",
-    "level": 0,
-    "range": "",
-    "duration": "",
-    "casting": "",
-    "verbal": false,
-    "somatic": false,
-    "material": 0,
-    "materials": "",
-    "concentration": false,
-    "ritual": false,
-    "description": "",
-    "atHigherLevel": ""
+function updatePopup5(){
+    let settingsUpload = document.getElementById("popup5_upload");
+    settingsUpload.onchange = function(){
+        let file = this.files[0];
+        let worked = false;
+        file.text().then(function(result){
+            try{
+                file = JSON.parse(result);
+                if(file instanceof Array) worked = true;
+            }
+            catch(e){
+                worked = false;
+            }
+            if(worked){
+                customSpells = file;
+                throwError("Success!", `Successfully imported ${file.length} spells.<br><em>Note: you have to go back to Step 1 for these changes to take effect.</em>`);
+                exportSettings.disabled = (customSpells.length === 0);
+                resetCustom.disabled = (customSpells.length === 0);
+            }
+            else{
+                throwError("Invalid File", "I'm not sure what you uploaded. But it's not a CustomSpells array.<br><br>Try manually adding spells then come back and export them for the next time you wish to import spells.");
+            }
+        });
+    };
+    let exportSettings = document.getElementById("settings_export");
+    exportSettings.disabled = (customSpells.length === 0);
+    let resetCustom = document.getElementById("settings_remove");
+    resetCustom.disabled = (customSpells.length === 0);
+    exportSettings.onclick = function(){
+        let element = document.createElement("a");
+        element.setAttribute("href", "data:json/plain;charset=utf-8," + encodeURIComponent(JSON.stringify(customSpells)));
+        element.setAttribute("download", "CustomSpells.json");
+        element.style.display = "none";
+        document.body.appendChild(element);
+        element.click();
+        element.remove();
+    };
+    document.getElementById("settings_import").onclick = function(){
+        settingsUpload.click();
+    };
+    resetCustom.onclick = function(){
+        let len = customSpells.length;
+        customSpells = [];
+        throwError("Success!", `Successfully removed ${len} spells.<br><em>Note: you have to go back to Step 1 for these changes to take effect.</em>`);
+        resetCustom.disabled = (customSpells.length === 0);
+        exportSettings.disabled = (customSpells.length === 0);
+    };
 
+    function setupSettings(name){
+        let elem = document.getElementById("settings" + name);
+        elem.value = overridePageData[name];
+        elem.onchange = function(){
+            overridePageData[name] = parseInt(this.value, 10) || 0;
+        };
+    }
+
+    setupSettings("width");
+    setupSettings("height");
+    setupSettings("horizontally");
+    setupSettings("vertically");
+    let settingsPreview = document.getElementById("settingsPreview");
+    settingsPreview.update = function(){
+        this.style.opacity = cardBorder.opacity;
+        settingsPreview.style.backgroundColor = cardBorder.color;
+        settingsPreview.style.top = (0 - cardBorder.thickness) + "px";
+        settingsPreview.style.left = (0 - cardBorder.thickness) + "px";
+        settingsPreview.style.border = cardBorder.thickness + "px solid " + cardBorder.color;
+        settingsPreview.style.opacity = (cardBorder.disable ? 0 : 1);
+    };
+    settingsPreview.style.height = settingsPreview.firstElementChild.clientHeight + "px";
+    let settingsThickness = document.getElementById("settingsThickness");
+    let settingsColor = document.getElementById("settingsColor");
+    let settingsDisable = document.getElementById("settingsDisable");
+    settingsThickness.oninput = function(){
+        cardBorder.thickness = parseInt(this.value, 10) / 10;
+        settingsPreview.update();
+    };
+    settingsColor.oninput = function(){
+        cardBorder.color = this.value;
+        settingsPreview.update();
+    };
+    settingsDisable.oninput = function(){
+        cardBorder.disable = !!this.checked;
+        settingsPreview.update();
+    };
+    settingsDisable.checked = cardBorder.disable;
+    settingsColor.value = cardBorder.color;
+    settingsThickness.value = (cardBorder.thickness * 10);
+    settingsPreview.update();
+
+}
+
+function updatePopup6(){
+    document.getElementById("popup6_special").onclick = function(){
+        settingsBttn.onclick();
+    };
+    let step6ArrowGroup = document.getElementById("step6ArrowGroup");
+    let footer = document.getElementById("footer");
+    setTimeout(function(){
+        step6ArrowGroup.style.left = ((0 - step6ArrowGroup.parentElement.parentElement.offsetLeft) / 2) + 10 + "px";
+        step6ArrowGroup.style.top = (step6ArrowGroup.clientHeight + step6ArrowGroup.parentElement.parentElement.offsetTop) - (footer.clientHeight / 2) - 10 + "px";
+    }, 2500);
+}
+
+document.getElementById("close_error").onclick = function(){
+    error.style.display = "none";
 };
 document.getElementById("step0").style.display = "none";
-updateStep();
 document.getElementById("popup4Save").onclick = function(){popup4FuncSave();};
 document.getElementById("popup4Cancel").onclick = function(){popup4FuncCancel();};
 document.getElementById("addSpells").onclick = function(){
@@ -769,110 +855,17 @@ document.getElementById("addSpells").onclick = function(){
         if(addBttn.onclick()) exitBttn.onclick();
     };
 };
-let settingsBttn = document.getElementById("settings");
 
-function updatePopup5(){
-    let settingsUpload = document.getElementById("popup5_upload");
-    settingsUpload.onchange = function(){
-        let file = this.files[0];
-        let worked = false;
-        file.text().then(function(result){
-            try{
-                file = JSON.parse(result);
-                if(file instanceof Array) worked = true;
-            }
-            catch(e){
-                worked = false;
-            }
-            if(worked){
-                customSpells = file;
-                throwError("Success!", `Successfully imported ${file.length} spells.<br><em>Note: you have to go back to Step 1 for these changes to take effect.</em>`);
-                exportSettings.disabled = (customSpells.length === 0);
-                resetCustom.disabled = (customSpells.length === 0);
-            }
-            else{
-                throwError("Invalid File", "I'm not sure what you uploaded. But it's not a CustomSpells array.<br><br>Try manually adding spells then come back and export them for the next time you wish to import spells.");
-            }
-        });
-    };
-    let exportSettings = document.getElementById("settings_export");
-    exportSettings.disabled = (customSpells.length === 0);
-    let resetCustom = document.getElementById("settings_remove");
-    resetCustom.disabled = (customSpells.length === 0);
-    exportSettings.onclick = function(){
-        let element = document.createElement("a");
-        element.setAttribute("href", "data:json/plain;charset=utf-8," + encodeURIComponent(JSON.stringify(customSpells)));
-        element.setAttribute("download", "CustomSpells.json");
-        element.style.display = "none";
-        document.body.appendChild(element);
-        element.click();
-        element.remove();
-    };
-    document.getElementById("settings_import").onclick = function(){
-        settingsUpload.click();
-    };
-    resetCustom.onclick = function(){
-        let len = customSpells.length;
-        customSpells = [];
-        throwError("Success!", `Successfully removed ${len} spells.<br><em>Note: you have to go back to Step 1 for these changes to take effect.</em>`);
-        resetCustom.disabled = (customSpells.length === 0);
-        exportSettings.disabled = (customSpells.length === 0);
-    };
 
-    function setupSettings(name){
-        let elem = document.getElementById("settings" + name);
-        elem.value = overridePageData[name];
-        elem.onchange = function(){
-            overridePageData[name] = parseInt(this.value, 10) || 0;
-        };
-    }
-
-    setupSettings("width");
-    setupSettings("height");
-    setupSettings("horizontally");
-    setupSettings("vertically");
-    let settingsPreview = document.getElementById("settingsPreview");
-    settingsPreview.update = function(){
-        this.style.opacity = cardBorder.opacity;
-        settingsPreview.style.backgroundColor = cardBorder.color;
-        settingsPreview.style.top = (0 - cardBorder.thickness) + "px";
-        settingsPreview.style.left = (0 - cardBorder.thickness) + "px";
-        settingsPreview.style.border = cardBorder.thickness + "px solid " + cardBorder.color;
-        settingsPreview.style.opacity = (cardBorder.disable ? 0 : 1);
+for(let i = 0; i < steps.length; i++){
+    stepsElem.push(document.getElementById("step" + steps[i]));
+    headerBttns.push(document.getElementById("header_step_" + steps[i]));
+    headerBttns[headerBttns.length - 1].onclick = function(){
+        currentStep = i;
+        updateStep();
     };
-    settingsPreview.style.height = settingsPreview.firstElementChild.clientHeight + "px";
-    let settingsThickness = document.getElementById("settingsThickness");
-    let settingsColor = document.getElementById("settingsColor");
-    let settingsDisable = document.getElementById('settingsDisable');
-    settingsThickness.oninput = function(){
-        cardBorder.thickness = parseInt(this.value, 10) / 10;
-        settingsPreview.update();
-    };
-    settingsColor.oninput = function(){
-        cardBorder.color = this.value;
-        settingsPreview.update();
-    };
-    settingsDisable.oninput = function(){
-        cardBorder.disable = !!this.checked;
-        settingsPreview.update();
-    }
-    settingsDisable.checked = cardBorder.disable;
-    settingsColor.value = cardBorder.color;
-    settingsThickness.value = (cardBorder.thickness * 10);
-    settingsPreview.update();
-
 }
 
+updateStep();
 resetSettingsBttn();
 
-function updatePopup6(){
-    document.getElementById("popup6_special").onclick = function(){
-        settingsBttn.onclick();
-    };
-    let step6ArrowGroup = document.getElementById("step6ArrowGroup");
-    let footer = document.getElementById("footer");
-    setTimeout(function(){
-        step6ArrowGroup.style.left = ((0 - step6ArrowGroup.parentElement.parentElement.offsetLeft) / 2) + 10 + "px";
-        step6ArrowGroup.style.top = (step6ArrowGroup.clientHeight + step6ArrowGroup.parentElement.parentElement.offsetTop) - (footer.clientHeight / 2) - 10 + "px";
-    }, 2500);
-}

@@ -16,26 +16,15 @@
  **/
 const blobStream = require("blob-stream");
 const Report = require("fluentreports").Report;
+const fontsToLoad = ["widelatin", "serif", "sans-serif", "ringbearer", "mplantin", "monospace", "impact", "cursive"];
+const fontkit = require("fontkit");
+
 module.exports = function(self){
     let callbacks = {};
-    let step3Choices, cardBorder, overridePageData, fonts, template, spells;
+    let step3Choices, cardBorder, overridePageData, template, spells;
+    let fonts = {};
     let cancelStep4 = false, started = false;
     let schoolImgObjs = {};
-    self.addEventListener('message',function(event){
-        if(event.data.type === "start"){
-            step3Choices = event.data.step3Choices;
-            cardBorder = event.data.cardBorder;
-            overridePageData = event.data.overridePageData;
-            fonts = event.data.fonts;
-            template = event.data.template;
-            spells = event.data.spells;
-            step4(event.data.step3FrontSrc, event.data.step3BackSrc);
-        }
-        else if(event.data.type === "callback"){
-            callbacks[event.data.id](event.data);
-        }
-    });
-
     let nbeebz = [
         {x: 65.43333333333328, y: 30.799999999999997, width: 156, height: 32, fontStyle: "ringbearer", fontSize: 0, textAlign: "Left", text: "{title}"},
         {x: 135.43333333333328, y: 97.3, width: 76, height: 29, fontStyle: "mplantin", fontSize: 0, textAlign: "Left", text: "{duration}"},
@@ -54,6 +43,65 @@ module.exports = function(self){
         w: 1,
         h: 1
     }, timeout = 0;
+
+    self.addEventListener("message", function(event){
+        if(event.data.type === "start"){
+            step3Choices = event.data.step3Choices;
+            cardBorder = event.data.cardBorder;
+            overridePageData = event.data.overridePageData;
+            template = event.data.template;
+            spells = event.data.spells;
+            loadAllFonts(0).then(function(){
+                step4(event.data.step3FrontSrc, event.data.step3BackSrc);
+            });
+        }
+        else if(event.data.type === "callback"){
+            callbacks[event.data.id](event.data);
+        }
+    });
+
+    function getArrayBuffer(item, id){
+        return new Promise(function(cb){
+            callbacks[id] = cb;
+            self.postMessage({type: "fontArrayBuffer", url: item, id});
+        });
+    }
+
+    function _loadFont(which){
+        return new Promise(function(cb, rj){
+            updateUser(true, "Loading font: " + which);
+            getArrayBuffer("./fonts/" + which + ".ttf", "FONT_" + which).then((data) => {
+                fonts[which] = fontkit.create(Buffer.from(data.ArrayBuffer), null);
+                cb();
+            }).catch(rj);
+        });
+    }
+
+    function loadAllFonts(which){
+        updateUser(false, "Loading fonts");
+        return new Promise(function(cb, rj){
+            _loadFont(fontsToLoad[which]).then(function(){
+                if(which + 1 === fontsToLoad.length) cb();
+                else loadAllFonts(which + 1).then(cb).catch(rj);
+            });
+        });
+    }
+
+    function replaceHTML(text){
+        let items = ["p", "i", "b", "ul", "li"];
+        text = text.replace(/<p>/g,"");
+        text = text.replace(/<\/p>/g,"");
+        text = text.replace(/<i>/g,"");
+        text = text.replace(/<\/i>/g,"");
+        text = text.replace(/<b>/g,"");
+        text = text.replace(/<\/b>/g,"");
+        text = text.replace(/<ul>/g,"");
+        text = text.replace(/<\/ul>/g,"");
+        text = text.replace(/<li>/g,"");
+        text = text.replace(/<\/li>/g,"");
+        text = text.replace(/&#39;/g, "'");
+        return text;
+    }
 
     function getCustomSpell(spell){
         let tempSpell = {
@@ -74,8 +122,8 @@ module.exports = function(self){
             description: spell.description || "",
             atHigherLevel: spell.atHigherLevel || ""
         };
-
-        tempSpell.description = (spell.description || "").split("<p>").join("").split("</p>").join("");
+        tempSpell.description = replaceHTML(spell.description || "");
+        tempSpell.atHigherLevel = replaceHTML(spell.atHigherLevel || "");
         if(spell.classes instanceof Array){
             for(let i = 0; i < spell.classes.length; i++){
                 tempSpell.classes[spell.classes[i]] = true;
@@ -95,9 +143,9 @@ module.exports = function(self){
         return tempSpell;
     }
 
-    function loadImg(link, id,context){
-        if(!context) updateUser(true,'Loading image: '+link);
-        else updateUser(true,context);
+    function loadImg(link, id, context){
+        if(!context) updateUser(true, "Loading image: " + link);
+        else updateUser(true, context);
         return new Promise(function(cb, rj){
             callbacks[id] = cb;
             self.postMessage({type: "loadImg", link, id});
@@ -126,7 +174,7 @@ module.exports = function(self){
                         else text = `Placing backside of card #${pageData.cardCount.placed.back + 1}`;
                     }
                     else text = `Placing card ${pageData.cardCount.placed.front + 1}/${spells.length}`;
-                    index = (display.counter - 1) % spells.length;
+                    index = (display.counter) % spells.length;
                     total = (pageData.cardCount.placed.front + pageData.cardCount.placed.back) + 1;
                 }
                 if(template && template.back && template.back.active){
@@ -146,7 +194,7 @@ module.exports = function(self){
     function LinkCheck(url, id){
         return new Promise(function(cb){
             callbacks["LINK_" + id] = cb;
-            self.postMessage({type: "linkCheck", url,id:"LINK_" + id});
+            self.postMessage({type: "linkCheck", url, id: "LINK_" + id});
         });
     }
 
@@ -163,7 +211,7 @@ module.exports = function(self){
         return new Promise(function(cb, rj){
             if(cancelStep4) cb();
             if(spell){
-                loadImg("./images/nbeebzspellscards/" + spell.name.replace(/\//g, "_") + ".png", "SPELL_" + spell.name.replace(/\//g, "_"),`Loading image #${index}/${spells.length} for: ${spell.name.replace(/\//g, "_")}`).then(function(image){
+                loadImg("./images/nbeebzspellscards/" + spell.name.replace(/\//g, "_") + ".png", "SPELL_" + spell.name.replace(/\//g, "_"), `Loading image #${index}/${spells.length} for: ${spell.name.replace(/\//g, "_")}`).then(function(image){
                     addNewCard(index, true, image.url).then(cb).catch(rj);
                 }).catch(rj);
             }
@@ -199,6 +247,7 @@ module.exports = function(self){
                         else{
                             //GENERATE CARD
                             pdfgen.template = nbeebz;
+                            template.cardSize = {width: 300, height: 420};
                             await addNewCard(i + j, true, schoolImgObjs[(spell.school || "none")].url).catch(console.error);
                         }
                     });
@@ -215,7 +264,7 @@ module.exports = function(self){
         }
         pdfgen.finish().then(function(blob){
             if(cancelStep4) return;
-            self.postMessage({type:"done","url":blob.toBlobURL("application/pdf")});
+            self.postMessage({type: "done", "url": blob.toBlobURL("application/pdf")});
         });
     }
 
@@ -230,53 +279,106 @@ module.exports = function(self){
         }
 
         updatePageData(cardsPlaced){
-            let cardSize = {
-                width: this.image.width - (cardBorder.thickness * 4),
-                height: this.image.height - (cardBorder.thickness * 4)
+            //Determine our preferred card size.
+            let targetCardSize = {
+                width: this.image.width,
+                height: this.image.height
             };
-            scale = {
-                x: ((overridePageData.width || cardSize.width) / cardSize.width),
-                y: ((overridePageData.height || cardSize.height) / cardSize.height)
-            };
+            let aspectRatio = this.image.width / this.image.height;
+            let normalCardSize = template.cardSize;
+            //fix targetCardSize if the image is too big.
+            if(targetCardSize.width > pageSize.width || targetCardSize.height > pageSize.height){
+                //if they are both too big.
+                if(targetCardSize.width > pageSize.width && targetCardSize.height > pageSize.height){
+                    let distance = {
+                        width: targetCardSize.width - pageSize.width,
+                        height: targetCardSize.height - pageSize.height
+                    };
+                    //find out which one is too big the most.
+                    if(distance.width > distance.height){
+                        targetCardSize = {
+                            width: pageSize.width,
+                            height: pageSize.width / aspectRatio
+                        };
+                    }
+                    else{
+                        targetCardSize = {
+                            width: pageSize.height * aspectRatio,
+                            height: pageSize.height
+                        };
+                    }
+                }
+                //if just the width is too big
+                else if(targetCardSize.width > pageSize.width){
+                    targetCardSize = {
+                        width: pageSize.width,
+                        height: pageSize.width / aspectRatio
+                    };
+                }
+                else{
+                    targetCardSize = {
+                        width: pageSize.height * aspectRatio,
+                        height: pageSize.height
+                    };
+                }
+            }
+            //If we're overriding width OR height.
+            if(overridePageData.width || overridePageData.height){
+                //if we're only overriding ONE but not the other.
+                if((overridePageData.width && !overridePageData.height) || (!overridePageData.width && overridePageData.height)){
+
+                    if(overridePageData.width){
+                        targetCardSize = {
+                            width: overridePageData.width,
+                            height: overridePageData.width / aspectRatio
+                        };
+                    }
+                    else{
+                        targetCardSize = {
+                            width: overridePageData.height * aspectRatio,
+                            height: overridePageData.height
+                        };
+                    }
+                }
+                //if we're overriding BOTH
+                else{
+                    targetCardSize = {
+                        width: overridePageData.width,
+                        height: overridePageData.height
+                    };
+                }
+            }
+            //If we have AUTO width/height but override col/rows
             if(overridePageData.width === 0 && overridePageData.horizontally !== 0){
                 let minWidth = (pageSize.width / overridePageData.horizontally) - (cardBorder.thickness * 4);
-                scale.x = 1 / (cardSize.width / (minWidth - (minWidth / 20)));
+                targetCardSize.width = (minWidth - (minWidth / 20));
             }
             if(overridePageData.height === 0 && overridePageData.vertically !== 0){
                 let minHeight = (pageSize.height / overridePageData.vertically) - (cardBorder.thickness * 4);
-                scale.y = 1 / (cardSize.height / (minHeight - (minHeight / 20)));
+                targetCardSize.height = (minHeight - (minHeight / 20));
             }
-            let cardsHorizontally = overridePageData.horizontally || (Math.floor(pageSize.width / (cardSize.width * scale.x)));
-            let cardsVertically = overridePageData.vertically || (Math.floor(pageSize.height / (cardSize.height * scale.y)));
-            if(cardsHorizontally === 0 || cardsVertically === 0){
-                if(cardsVertically === 0 && cardsHorizontally === 0){
-                    let distance = {
-                        width: cardSize.width - pageSize.width,
-                        height: cardSize.height - pageSize.height
-                    };
-                    if(distance.width > distance.height) cardsVertically = 1;
-                    else cardsHorizontally = 1;
-                }
-                if(cardsHorizontally === 0){
-                    scale.x = 1 / (cardSize.width / (pageSize.width - (pageSize.width / 20)));
-                    scale.y = scale.x;
-                    cardsHorizontally = 1;
-                }
-                else{
-                    scale.y = 1 / (cardSize.height / (pageSize.height - (pageSize.height / 20)));
-                    scale.x = scale.y;
-                    cardsVertically = 1;
-
-                }
+            //Remove border's thickness.
+            if(!cardBorder.disable){
+                targetCardSize.width -= (cardBorder.thickness * 4);
+                targetCardSize.height -= (cardBorder.thickness * 4);
             }
-            let leftoverHorizontal = pageSize.width - ((cardSize.width * scale.x) * cardsHorizontally);
-            let leftoverVertical = pageSize.height - ((cardSize.height * scale.y) * cardsVertically);
-
+            //Then determine scale
+            scale = {
+                x: 1 / (normalCardSize.width / targetCardSize.width), //420 * ? = 1200 | ? = 2.857 | (1 / ((420 / 1200) || 0.35) || 2.857)
+                y: 1 / (normalCardSize.height / targetCardSize.height)
+            };
+            //Figure out how many rows/cols of cards we will have.
+            let cardsHorizontally = overridePageData.horizontally || (Math.floor(pageSize.width / (normalCardSize.width * scale.x)));
+            let cardsVertically = overridePageData.vertically || (Math.floor(pageSize.height / (normalCardSize.height * scale.y)));
+            //If we somehow hit 0. Mininum is 0, don't change width/height due to it only going under due to user overriding it.
+            cardsHorizontally = cardsHorizontally || 1;
+            cardsVertically = cardsVertically || 1;
+            //Detect margin.
+            let leftoverHorizontal = pageSize.width - ((normalCardSize.width * scale.x) * cardsHorizontally);
+            let leftoverVertical = pageSize.height - ((normalCardSize.height * scale.y) * cardsVertically);
             pageData = {
-                cardSize: {
-                    width: cardSize.width,
-                    height: cardSize.height
-                },
+                targetCardSize,
+                cardSize: normalCardSize,
                 cardCount: {
                     horizontally: cardsHorizontally,
                     vertically: cardsVertically,
@@ -301,7 +403,6 @@ module.exports = function(self){
                 cardEditingPos: {}
             };
             pageData.cardsOnThisPage = cardsPlaced;
-            pageData.cardsPlaced = this.detail.length;
             pageData.cardEditingPos = {
                 x: pageData.cardsOnThisPage % pageData.cardCount.horizontally,
                 y: Math.floor(pageData.cardsOnThisPage / pageData.cardCount.horizontally)
@@ -456,13 +557,7 @@ module.exports = function(self){
             text = text.split("{materials}").join(spell.materials);
             text = text.split("{description}").join(spell.description);
             text = text.split("{athigherlevel}").join(spell.atHigherLevel);
-            text = text.split("<p>").join("");
-            text = text.split("<br>").join("");
-            text = text.split("<b>").join("");
-            text = text.split("<i>").join("");
-            text = text.split("</p>").join("");
-            text = text.split("</b>").join("");
-            text = text.split("</i>").join("");
+            text = replaceHTML(text);
             return text;
         }
 
@@ -481,12 +576,10 @@ module.exports = function(self){
                     width: pageData.cardSize.width,
                     height: pageData.cardSize.height
                 };
-
-                //Make the options.(x/y) act like they aren't scaled.
-                options.x -= (cardBorder.thickness);
-                options.y -= (cardBorder.thickness);
-                options.x /= scale.x;
-                options.y /= scale.y;
+                if(!cardBorder.disable){
+                    options.x -= (cardBorder.thickness);
+                    options.y -= (cardBorder.thickness);
+                }
 
             }
             if(spell) spell = getCustomSpell(spell);
@@ -498,11 +591,10 @@ module.exports = function(self){
                     "settings": {
                         x: (options.x * scale.x) + margin.x || 0,
                         y: (options.y * scale.y) + margin.y || 0,
-                        width: (options.width * scale.x) || (this.image.width * scale.x),
-                        height: (options.height * scale.y) || (this.image.height * scale.y)
+                        width: (options.width * scale.x) || (200),
+                        height: (options.height * scale.y) || (200)
                     },
-                    "type": "image",
-                    front
+                    "type": "image"
                 }];
                 if(front){
                     let replacedText;
@@ -511,34 +603,29 @@ module.exports = function(self){
                         replacedText = this._getReplaced(this.template[i].text, spell);
                         if(this.template[i].fontSize !== 0) size = this.template[i].fontSize;
                         let data;
-                        let size = this.template[i].fontSize;
+                        let size = this.template[i].fontSize * ((scale.x + scale.y) / 2);
                         if(!size){
                             size = 200;
                             let fit = false;
-                            console.log(fonts[this.template[i].fontStyle]);
                             while(!fit){
-                                data = await this._getLineData(replacedText, this.template[i].width, this.template[i].height, fonts[this.template[i].fontStyle], size, i === 6);
-
+                                data = await this._getLineData(replacedText, this.template[i].width * scale.x, this.template[i].height * scale.y, fonts[this.template[i].fontStyle], size, (i === 0 && size === 200));
                                 if(data.failed) size -= size / 20;
                                 else fit = true;
 
                                 if(size < this.minFontSize){
-                                    //error("Minimum size...", this.template[i].text, " | ", i);
                                     size = this.minFontSize;
                                     fit = true;
                                 }
                             }
                         }
-                        let x = options.x + this.template[i].x;
-                        let y = options.y + this.template[i].y;
+                        let x = ((options.x + this.template[i].x) * scale.x) + margin.x;
+                        let y = ((options.y + this.template[i].y) * scale.y) + margin.y;
                         if(data.failed){
                             detail.push({
                                 text: data.truncate,
                                 "settings": {
-                                    x: (x * scale.x) + margin.x,
-                                    y: (y * scale.y) + margin.y,
-                                    "textX": (x * scale.x) + margin.x,
-                                    "textY": (y * scale.y) + margin.y,
+                                    "textX": x,
+                                    "textY": y,
                                     "font": this.template[i].fontStyle,
                                     fontSize: size * ((scale.x + scale.y) / 2),
                                     "align": this.template[i].textAlign,
@@ -550,27 +637,25 @@ module.exports = function(self){
                             });
                         }
                         else{
+                            y += (this.template[i].height * scale.y) / 2;
+                            y -= data.height / 2;
                             if(this.template[i].textAlign.toLowerCase() === "center"){
-                                x += this.template[i].width / 2;
-                                x -= data.width / 2;
-                                y += this.template[i].height / 2;
-                                y -= data.height / 2;
+                                x += (this.template[i].width * scale.x) / 2;
+                                x -= (data.width / 2);
                             }
                             else if(this.template[i].textAlign.toLowerCase() === "right"){
-                                x += this.template[i].width;
+                                x += (this.template[i].width * scale.x);
                                 x -= data.width;
-                                y += this.template[i].height;
-                                y -= data.height;
                             }
                             detail.push({
                                 text: replacedText,
                                 "settings": {
                                     x: ((options.x + this.template[i].x) * scale.x) + margin.x,
                                     y: ((options.y + this.template[i].y) * scale.y) + margin.y,
-                                    "textX": (x * scale.x) + margin.x,
-                                    "textY": (y * scale.y) + margin.y,
+                                    "textX": x,
+                                    "textY": y,
                                     "font": this.template[i].fontStyle,
-                                    fontSize: size * ((scale.x + scale.y) / 2),
+                                    fontSize: size,
                                     "align": this.template[i].textAlign,
                                     width: this.template[i].width * scale.x,
                                     height: this.template[i].height * scale.y
@@ -601,10 +686,9 @@ module.exports = function(self){
         async _displayDetail(report, data, state, callback){
             this._counter = this._counter || 0;
             this.pageNumber = this.pageNumber || 0;
-            pdfgen.updatePageData(this._counter % pageData.cardCount.placeable);
-            this._counter++;
+            pdfgen.updatePageData((pageData.cardCount.placeable > 1 ? (this._counter % pageData.cardCount.placeable) : (this._counter ? 1 : 0)));
             updateUser(true, {counter: this._counter, front: data[0].front, type: "pdf"});
-            if(previousWasFront !== data[0].front || (pageData.cardsOnThisPage === pageData.cardCount.placeable && this._counter !== 1)){
+            if(previousWasFront !== data[0].front || (pageData.cardsOnThisPage === pageData.cardCount.placeable && this._counter !== 0)){
                 this.pageNumber++;
                 await pdfgen._newPage(report);
             }
@@ -640,6 +724,7 @@ module.exports = function(self){
             }
             if(data[0].front) pageData.cardCount.placed.front++;
             else pageData.cardCount.placed.back++;
+            this._counter++;
             callback();
         }
 
@@ -673,14 +758,14 @@ module.exports = function(self){
     function step4(step3FrontSrc, step3BackSrc){
         let loaded = [false, !step3Choices.back, step3Choices.frontChoice !== "nbeebz"];
         //FRONT
-        loadImg(step3FrontSrc, "FRONT","Loading front side of card.").then(function(image){
+        loadImg(step3FrontSrc, "FRONT", "Loading front side of card.").then(function(image){
             template.image = image;
             loaded[0] = true;
             if(loaded[0] && loaded[1] && loaded[2]) startCode();
         }).catch(console.error);
         //BACK
         if(step3Choices.back){
-            loadImg(step3BackSrc, "BACK","Loading back side of card.").then(function(image){
+            loadImg(step3BackSrc, "BACK", "Loading back side of card.").then(function(image){
                 template.back = {
                     active: true,
                     url: image.url
@@ -695,7 +780,7 @@ module.exports = function(self){
         let possibleSchools = ["abjuration", "enchantment", "conjuration", "illusion", "transmutation", "divination", "necromancy", "evocation", "none"];
         if(step3Choices.frontChoice === "nbeebz"){
             for(let i = 0; i < possibleSchools.length; i++){
-                loadImg("./images/HighQuality/CardSides/template_" + possibleSchools[i] + ".png", "SCHOOL_" + possibleSchools[i],`Loading: template_${possibleSchools[i]}.png`).then(function(image){
+                loadImg("./images/HighQuality/CardSides/template_" + possibleSchools[i] + ".png", "SCHOOL_" + possibleSchools[i], `Loading: template_${possibleSchools[i]}.png`).then(function(image){
                     schoolImgObjs[possibleSchools[i]] = image;
                     loadedSchoolImg[i] = true;
                     let allGood = true;

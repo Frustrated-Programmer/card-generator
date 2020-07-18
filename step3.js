@@ -49,6 +49,7 @@ step3_front_hiddenInput.onchange = function(){
     let file = this.files[0];
     let success = updateFile(step3_preview_front,file);
     if(success){
+        addedElems = [];
         front_select.selectedIndex = 1;
         front_select.before = 1;
         step_3_front_custom.innerText = file.name;
