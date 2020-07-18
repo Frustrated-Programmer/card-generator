@@ -187,7 +187,7 @@ function nextStep(){
         if(front_select.selectedIndex !== 2){
             template = JSON.parse(JSON.stringify(ColorAndClassTemplate));
         }
-        else template = {details:nbeebz,back:{},image:{}};
+        else template = {details:nbeebz,back:{},image:{},cardSize:{width: 300, height: 420}};
     }
     updateStep();
 }
