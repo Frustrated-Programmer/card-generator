@@ -14,7 +14,6 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **/
-const step3Div = document.getElementById("step3");
 const step35Canvas = document.getElementById("step35Canvas");
 const step35_img = document.getElementById("step3_preview_front");
 const step35_simpleSettings = document.getElementById("step35_simpleSettings");
@@ -31,8 +30,7 @@ const step35_settings_fontsize = document.getElementById("step35_settings_fontsi
 const step35_settings_text = document.getElementById("step35_settings_text");
 const step35_settings_fontStyle = document.getElementById("step35_settings_fontStyle");
 const step35_settings_textAlign = document.getElementById("step35_settings_textAlign");
-
-const docs = document.getElementById('docs')
+const hiddenWidthChecker = document.getElementById('hiddenWidthChecker')
 
 let canvasStats = {
     cursorX: 0,
@@ -80,12 +78,11 @@ step35Canvas.onmousemove = function(ev){
         scaleParam.x += (ev.movementX / scaleParam.zoom);
         scaleParam.y += (ev.movementY / scaleParam.zoom);
     }
-    docs.innerText = `scX: ${scaleParam.x}, wid: ${step35Canvas.width}, zm: ${scaleParam.zoom}, x: ${canvasStats.cornerX}, offX: ${scaleParam.offsetX}, curX: ${canvasStats.cursorX}`;
 
     canvasStats.pageX = ev.pageX;
     canvasStats.pageY = ev.pageY;
     canvasStats.cornerX = ev.pageX;
-    canvasStats.cornerY = (ev.pageY - (step35Canvas.offsetTop + header.clientHeight + step3Div.offsetHeight));
+    canvasStats.cornerY = (ev.pageY - (step35Canvas.offsetTop + header.clientHeight ));
 
     if(selectedElem && canvasStats.leftMouseDown){
         function changeLeft(){
@@ -151,9 +148,11 @@ step35Canvas.onmouseup = function(ev){
     if(ev.button === 2) canvasStats.rightMouseDown = false;
     if(selectedElem) selectedElem.moving = false;
 };
-step35Canvas.oncontextmenu = function(){
+step35Canvas.oncontextmenu = function(ev){
+    ev.preventDefault();
     return false;
 };
+step35_simpleSettings.oncontextmenu = step35Canvas.oncontextmenu;
 window.onmousewheel = function(ev){
     scaleParam.zoom *= (ev.deltaY < 0) ? 1.1 : 0.5;
     scaleParam.offsetX = canvasStats.cornerX / scaleParam.zoom;
@@ -240,7 +239,7 @@ function DragDroppableElem(text){
     this.textAlign = "Left";
     this.fontSize = 0;
     this.x = 765;
-    this.y = 365;
+    this.y = 0;
     this.width = 100;
     this.height = 50;
     this.circleSize = 5;
@@ -276,6 +275,7 @@ function DragDroppableElem(text){
     this.blinked = false;
     this.selected = false;
     this.moving = false;
+    this.usedFont = 0;
 }
 
 DragDroppableElem.prototype.unselect = function(){
@@ -441,6 +441,12 @@ DragDroppableElem.prototype.math = function(){
         }
     }
 };
+DragDroppableElem.prototype.measureWidth = function(fontSize){
+    hiddenWidthChecker.style.fontSize = fontSize + "px";
+    hiddenWidthChecker.style.fontStyle = this.fontStyle;
+    hiddenWidthChecker.innerHTML = this.text;
+    return hiddenWidthChecker.clientWidth;
+}
 DragDroppableElem.prototype.draw = function(context){
 
     this.math();
@@ -454,9 +460,8 @@ DragDroppableElem.prototype.draw = function(context){
     let size = this.fontSize || this.height;
     do{
         size--;
-        context.font = size + "px " + this.fontStyle;
-    } while(context.measureText(this.text).width > this.width);
-
+    } while(this.measureWidth(size) > this.width);
+    context.font = size + "px " + this.fontStyle;
     context.textAlign = this.textAlign.toLowerCase();
     if(this.textAlign.toLowerCase() === "left") context.fillText(this.previewText, this.x, this.y + this.height - (this.height / 4));
     if(this.textAlign.toLowerCase() === "center") context.fillText(this.previewText, this.x + (this.width / 2), this.y + this.height - (this.height / 4));
@@ -638,8 +643,8 @@ document.getElementById("step35_continue").onclick = function(){
     updateStep();
 };
 
-
 function updateStep35(){
+
     //RESET CANVAS
     canvasStats.cursorX = (((canvasStats.cornerX / scaleParam.zoom) - offset.x) + (scaleParam.offsetX - (scaleParam.offsetX / scaleParam.zoom))) - scaleParam.x;
     canvasStats.cursorY = (((canvasStats.cornerY / scaleParam.zoom) - offset.y) + (scaleParam.offsetY - (scaleParam.offsetY / scaleParam.zoom))) - scaleParam.y;
@@ -660,7 +665,6 @@ function updateStep35(){
     context.translate(scaleParam.offsetX, scaleParam.offsetY);
     context.scale(scaleParam.zoom, scaleParam.zoom);
     context.translate(-scaleParam.offsetX, -scaleParam.offsetY);
-
     context.translate(scaleParam.x, scaleParam.y);
     context.translate(offset.x, offset.y);
     context.beginPath();

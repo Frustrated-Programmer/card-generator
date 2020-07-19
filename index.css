@@ -202,7 +202,7 @@ body, html {
 	z-index: 10;
 	width: calc(100% - 20px);
 	background-color: black;
-	margin-top: 25px;
+	margin-top: 23px;
 	padding: 10px;
 	height: calc(10% - 20px);
 	position: relative;
@@ -211,6 +211,7 @@ body, html {
 }
 
 #buyCoffee {
+	height: 80%;
 	position: absolute;
 	left: 83.5%;
 	top: 12px;
@@ -218,7 +219,7 @@ body, html {
 }
 
 #becomePatreon {
-	height: 55px;
+	height: 85%;
 	position: absolute;
 	left: 66%;
 	top: 10px;
@@ -495,6 +496,7 @@ body, html {
 	font-size: 132%;
 	font-family: mplantin sans-serif;
 	height: 30px;
+	white-space: nowrap;
 }
 
 #settings_table input {

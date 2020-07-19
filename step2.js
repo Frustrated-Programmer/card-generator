@@ -18,6 +18,7 @@
 spells = [];
 let hovering=[false,false];
 let shownDiv;
+let recentlyClosedPreview = false;
 let dissapearTimeout;
 let spell_preview = document.getElementById("spell_preview");
 let spell_preview_list = document.getElementById('spell_preview_list');
@@ -30,6 +31,7 @@ spell_preview.onmouseleave = function (){
     this.hide();
 }
 spell_preview.show = function(spell){
+    recentlyClosedPreview = false;
     if(dissapearTimeout) clearTimeout(dissapearTimeout);
     spell_preview.style.display = "grid";
     if(spell && spell.name){
@@ -38,7 +40,7 @@ spell_preview.show = function(spell){
     }
 };
 spell_preview.hide = function(force){
-    if(hovering[0] || hovering[1]) return;
+    if((hovering[0] || hovering[1]) && !force) return;
     dissapearTimeout = setTimeout(() => {
         this.style.display = "none";
         clearTimeout(this.timeout);
@@ -87,7 +89,7 @@ function previewSpell(spell){
     spell = getCustomSpell(spell);
     spell_preview.style.left = (mousePos.x + 10)+"px";
     spell_preview.style.width = "400px";
-    if(step2_spell_list.clientWidth - mousePos.x <385){
+    if(step2_spell_list.clientWidth - mousePos.x < 410){
         spell_preview.style.left = (step2_spell_list.clientWidth - 410) + "px";
         spell_preview.style.width = 400+"px";
     }
@@ -95,6 +97,14 @@ function previewSpell(spell){
     if(step2_spell_list.clientHeight - mousePos.y < -50){
         spell_preview.style.top = (step2_spell_list.clientHeight - 100) + "px";
     }
+    let closeBttn = document.createElement('button');
+    closeBttn.id = "step2_closeBttn";
+    closeBttn.innerText = "X";
+    closeBttn.onclick = function(){
+        spell_preview.hide(true);
+        recentlyClosedPreview = true;
+    };
+    spell_preview_list.appendChild(closeBttn);
     let span = document.createElement('span');
     span.innerHTML = spell.name;
     span.style.fontFamily = "ringbearer";
@@ -159,7 +169,6 @@ function previewSpell(spell){
     }
     spell_preview_list.appendChild(table);
 }
-
 function createStep2Elem(spell, index){
     let div = document.createElement("div");
     div.style.backgroundColor = index % 2 === 0 ? "#4D4D4D" : "#6F6F6F";
@@ -178,6 +187,9 @@ function createStep2Elem(spell, index){
         }
         Step2createSpellLists();
     };
+    deleteBttn.onmouseenter = function(){
+        div.clearTime();
+    }
     div.appendChild(name);
     div.appendChild(deleteBttn);
     div.onmouseenter = function(){
@@ -189,7 +201,7 @@ function createStep2Elem(spell, index){
             this.timeout = setTimeout(() => {
                 spell_preview.show(spell);
                 shownDiv = this;
-            }, 1000);
+            }, recentlyClosedPreview ? 3000 : 1000);
         }
     };
     div.clearTime = function(){
@@ -197,7 +209,7 @@ function createStep2Elem(spell, index){
             spell_preview.hide();
         }
         else{
-            clearTimeout(this.timeout);
+            if(this.timeout) clearTimeout(this.timeout);
             this.timeout = false;
         }
     };
@@ -208,7 +220,6 @@ function createStep2Elem(spell, index){
     return div;
 
 }
-
 function Step2createSpellLists(){
     let tr;
     while(step2_spell_list.firstElementChild){

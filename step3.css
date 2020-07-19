@@ -49,8 +49,8 @@
 }
 
 #step3_frontside, #step3_backside {
-    width: 23%;
-    top: 47%;
+    width: 20%;
+    top: 54%;
     display: grid;
     position: absolute;
     transform: translate(-50%, -50%);

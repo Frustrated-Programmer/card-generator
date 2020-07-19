@@ -180,7 +180,7 @@ module.exports = function(self){
                 if(template && template.back && template.back.active){
                     text += `\\n{ frontSide:${display.front}, cardNumber:${total}`;
                     if(display.front) text += `, name: \\"${spells[index].name}\\" }`;
-                    else text += ", name: null }";
+                    else text += ", name: card_backside }";
                 }
                 else text += `\\nCurrent card: \\n{ ${spells[index].name} }`;
                 self.postMessage({"type": "evalMe", "function": "step4_detailed.innerText = \"" + text + "\\n\";"});
@@ -760,6 +760,7 @@ module.exports = function(self){
 
     function step4(step3FrontSrc, step3BackSrc){
         let loaded = [false, !step3Choices.back, step3Choices.frontChoice !== "nbeebz"];
+        updateUser(false,"Loading images.")
         //FRONT
         loadImg(step3FrontSrc, "FRONT", "Loading front side of card.").then(function(image){
             template.image = image;

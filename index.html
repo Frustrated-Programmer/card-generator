@@ -198,6 +198,7 @@
 		</div>
 	</div>
 	<div id="step35" class="step">
+		<div id="hiddenWidthChecker"></div>
 		<div id="step35_more_settings">
 			<div class="step35_more_settings_box">
 				<span>Text:</span>
@@ -255,7 +256,7 @@
 		</div>
 		<div>
 			<h3>Place inputs on your template.</h3>
-			<span id="docs"></span>
+			<span>After adding an input, try clicking it and then right-clicking it.</span>
 			<button id="step35_continue">Continue</button>
 			<h1 id="step35_help">{ ? }</h1>
 			<canvas id="step35Canvas" width="1000" height="350">
@@ -485,7 +486,7 @@
 		</div>
 	</div>
 	<div id="popup3" style="z-index: 12;" class="popup">
-		<div id="popup3_container" class="popup_container">
+		<div style="height: auto;" id="popup3_container" class="popup_container">
 			<div id="popup3_body" class="popup_body">
 				<h3 style="margin-bottom: 0;">Missing spells? Add them here</h3>
 				<p style="margin-bottom: 0;">This only TEMPORARILY adds the spells, as I cannot legally distribute them.<br>Note: you will have to go back to Step 1 for these spells to be accessed.</p>
@@ -642,7 +643,7 @@
 		</div>
 	</div>
 	<div id="popup5" class="popup" style="z-index: 12;">
-		<div id="popup5_container" class="popup_container">
+		<div style="height:auto" id="popup5_container" class="popup_container">
 			<div id="popup5_body" class="popup_body">
 				<h2 style="font-size: 200%; text-align: center; margin-bottom: 1px; ">Settings</span></h2>
 				<div>
@@ -669,7 +670,7 @@
 					<div id="settings_buttons">
 					<button id="settings_export">Export Custom Spells</button>
 					<button id="settings_import">Import Custom Spells</button>
-					<button id="settings_remove" style="font-size: 120%">Remove all Custom Spells</button>
+					<button id="settings_remove" style="font-size: 108%">Remove all Custom Spells</button>
 					</div>
 					<input type="file" id="popup5_upload" accept="json" style="display:none">
 					<br>
@@ -726,52 +727,7 @@
 		</a>
 	</div>
 	<div id="buyCoffee">
-		<style>.bmc-button img {
-			width: 35px !important;
-			margin-bottom: 1px !important;
-			box-shadow: none !important;
-			border: none !important;
-			vertical-align: middle !important;
-		}
-		
-		.bmc-button {
-			padding: 7px 10px 7px 10px !important;
-			line-height: 35px !important;
-			height: 51px !important;
-			min-width: 217px !important;
-			text-decoration: none !important;
-			display: inline-flex !important;
-			color: #FFFFFF !important;
-			background-color: #5F7FFF !important;
-			border-radius: 5px !important;
-			border: 1px solid transparent !important;
-			padding: 7px 10px 7px 10px !important;
-			font-size: 20px !important;
-			letter-spacing: 0.6px !important;
-			box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;
-			-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;
-			margin: 0 auto !important;
-			font-family: 'Arial', cursive !important;
-			-webkit-box-sizing: border-box !important;
-			box-sizing: border-box !important;
-			-o-transition: 0.3s all linear !important;
-			-webkit-transition: 0.3s all linear !important;
-			-moz-transition: 0.3s all linear !important;
-			-ms-transition: 0.3s all linear !important;
-			transition: 0.3s all linear !important;
-		}
-		
-		.bmc-button:hover, .bmc-button:active, .bmc-button:focus {
-			-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;
-			text-decoration: none !important;
-			box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;
-			opacity: 0.85 !important;
-			color: #FFFFFF !important;
-		}</style>
-		<link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet">
-		<a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/Frustrated"><img
-				src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy me a coffee"><span
-				style="margin-left:15px;font-size:19px !important;">Buy me a coffee</span></a>
+		<a target="_blank" style="height: 85%;" href="https://www.buymeacoffee.com/Frustrated"><img style="height: 100%; width: auto" src="./images/website/buy_a_coffee.png"></a>
 	</div>
 </div>
 </body>

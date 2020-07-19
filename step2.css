@@ -23,11 +23,21 @@
 		background-color: #CECECE;
 	}
 }
-
+#step2_closeBttn{
+	float: right;
+	margin-right: 10px;
+	border: none;
+	width: 20px;
+	border-radius: 20px;
+	background-color: #1290ff;
+	height: 20px;
+	font-family: cursive;
+	font-size: 82%;
+}
 .moreBttn {
 	background-color: transparent;
 	border: none;
-	color: #46DEFF;
+	color: blue;
 	font-style: italic;
 	text-decoration: underline;
 	font-family: monospace;
@@ -103,14 +113,16 @@
 	font-family: mplantin;
 	color: #424242;
 }
-
+.step2_spell_list_item:hover{
+	cursor: help;
+}
 .step2_spell_list_item {
 	padding: 2px;
-	height: 34px;
+	height: auto;
 	font-family: ringbearer;
 	width: calc(100% - 4px);
 	display: flex;
-	font-size: 200%;
+	font-size: 150%;
 }
 
 .step2_spell_list_item span {
