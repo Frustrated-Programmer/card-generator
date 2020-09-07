@@ -30,6 +30,9 @@ This page is the least important, but without a loading screen user's may thing 
 This page is where the user's see a PDF of all their cards front and backs aligned. The user can then download their PDF or just print them from there.
 
 #Planned Features
+ - Add dropdown to Step2 to change what it sorts by.
+ - Fix card template for nBeebz's cards. (pass without trace)
+ - Add the option to keep font size for descriptions, and force the rest of the description onto a new card. 
  - Update CSS so the site doesn't look bad for browsers other than Chrome.
  - at somepoint try allow HTML ul,li,b,i into spell cards to have styled changes.
  - Make Step 3.5's ability to customize spell cards much more advanced
