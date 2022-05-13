@@ -1,5 +1,4 @@
 # Card Generator
-###### Found at http://frustratedprogrammer.com/card-generator/
 ### Note: This was designed in the Chrome's browser. Visual glitches **will** be in other browsers. I haven't had time to fix them yet.
 ###### Currently set up for Dungeon's and Dragon's 5e.
 The card generator is split into 5 parts, that each do different things, you can go to previous steps, but cannot go ahead until you complete the current step.
